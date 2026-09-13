@@ -1,0 +1,116 @@
+# ---------------------------------------------------------------------------
+# RAG genérico sobre MITRE ATT&CK — 100 % local
+#
+#   qdrant       -> base de datos vectorial
+#   ollama       -> servidor de LLM + embeddings
+#   ollama-init  -> descarga los modelos definidos en .env (una sola vez)
+#   ingest       -> descarga MITRE ATT&CK (STIX 2.1), chunking, embeddings, upsert
+#   api          -> FastAPI: /query (rag | llm), /retrieve, /models, /collection
+#   ui           -> Streamlit: interfaz web con selector RAG / Solo LLM / Comparar
+#
+# Uso:
+#   docker compose up -d --build
+#   (GPU NVIDIA) docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --build
+# ---------------------------------------------------------------------------
+
+name: rag-mitre
+
+services:
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: rag-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"   # REST + dashboard: http://localhost:6333/dashboard
+      - "6334:6334"   # gRPC
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: rag-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    environment:
+      OLLAMA_KEEP_ALIVE: ${OLLAMA_KEEP_ALIVE:-30m}
+      OLLAMA_NUM_PARALLEL: ${OLLAMA_NUM_PARALLEL:-1}
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  # Descarga (pull) de los modelos. Idempotente: si ya existen no vuelve a bajarlos.
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: rag-ollama-init
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        for m in ${LLM_MODEL} ${EMBED_MODEL} ${EXTRA_MODELS}; do
+          echo ">> ollama pull $$m"
+          ollama pull "$$m"
+        done
+        echo ">> modelos disponibles:"; ollama list
+    restart: "no"
+
+  # Ingesta del corpus. Se ejecuta una vez; si la colección ya tiene puntos, se omite
+  # (usa FORCE_REINGEST=true en .env para reconstruir).
+  ingest:
+    build: ./app
+    container_name: rag-ingest
+    command: ["python", "-m", "rag.ingest"]
+    env_file: .env
+    depends_on:
+      qdrant:
+        condition: service_started
+      ollama-init:
+        condition: service_completed_successfully
+    volumes:
+      - ./data:/data
+    restart: "no"
+
+  api:
+    build: ./app
+    container_name: rag-api
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8000:8000"   # Swagger: http://localhost:8000/docs
+    depends_on:
+      qdrant:
+        condition: service_started
+      ollama:
+        condition: service_healthy
+    volumes:
+      - ./data:/data
+      - ./app:/code        # hot-reload del código en desarrollo
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  ui:
+    build: ./ui
+    container_name: rag-ui
+    restart: unless-stopped
+    environment:
+      API_URL: http://api:8000
+    ports:
+      - "8501:8501"   # Interfaz web: http://localhost:8501
+    depends_on:
+      - api
+    volumes:
+      - ./ui:/code
+
+volumes:
+  qdrant_storage:
+  ollama_models:
