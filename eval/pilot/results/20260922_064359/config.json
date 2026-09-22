@@ -1,0 +1,15 @@
+{
+  "api": "http://localhost:8000",
+  "model": "qwen3:4b-instruct",
+  "embed_model": "granite-embedding:30m",
+  "retrieval": "hybrid",
+  "top_k": 5,
+  "temperature": 0.0,
+  "think": false,
+  "modes": [
+    "rag",
+    "llm"
+  ],
+  "collection_points": 7241,
+  "started_at": "2026-09-22T06:43:59"
+}

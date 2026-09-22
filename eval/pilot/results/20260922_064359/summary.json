@@ -1,0 +1,28 @@
+{
+  "config": {
+    "api": "http://localhost:8000",
+    "model": "qwen3:4b-instruct",
+    "embed_model": "granite-embedding:30m",
+    "retrieval": "hybrid",
+    "top_k": 5,
+    "temperature": 0.0,
+    "think": false,
+    "modes": [
+      "rag",
+      "llm"
+    ],
+    "collection_points": 7241,
+    "started_at": "2026-09-22T06:43:59"
+  },
+  "n_questions": 13,
+  "n_responses": 26,
+  "n_errors": 0,
+  "retrieval_gold_hit_at_k": {
+    "hits": 6,
+    "total": 9
+  },
+  "avg_total_ms": {
+    "rag": 93731.6,
+    "llm": 65390.8
+  }
+}
