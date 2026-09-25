@@ -1,0 +1,126 @@
+[
+  {
+    "id": "p01",
+    "tie_at_boundary": true,
+    "same_topk_as_trace": false,
+    "boundary_candidates": [
+      [
+        "T1059.010",
+        "952ba9e9-02f1-5a73-9728-d18d3b697266",
+        0.25
+      ],
+      [
+        "S0393",
+        "3176af7f-1b20-500d-8754-9e2746f08472",
+        0.25
+      ]
+    ],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p02",
+    "tie_at_boundary": false,
+    "same_topk_as_trace": true,
+    "boundary_candidates": [],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p03",
+    "tie_at_boundary": false,
+    "same_topk_as_trace": true,
+    "boundary_candidates": [],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p04",
+    "tie_at_boundary": true,
+    "same_topk_as_trace": false,
+    "boundary_candidates": [
+      [
+        "S0154",
+        "453037f2-27fc-596c-9ac1-1bac80182d56",
+        0.25
+      ],
+      [
+        "T1001.003",
+        "a8f8bb82-ac11-5f17-b51c-536281194ec5",
+        0.25
+      ]
+    ],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p05",
+    "tie_at_boundary": false,
+    "same_topk_as_trace": true,
+    "boundary_candidates": [],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p06",
+    "tie_at_boundary": false,
+    "same_topk_as_trace": true,
+    "boundary_candidates": [],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p07",
+    "tie_at_boundary": false,
+    "same_topk_as_trace": true,
+    "boundary_candidates": [],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p08",
+    "tie_at_boundary": false,
+    "same_topk_as_trace": true,
+    "boundary_candidates": [],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p09",
+    "tie_at_boundary": false,
+    "same_topk_as_trace": true,
+    "boundary_candidates": [],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p10",
+    "tie_at_boundary": false,
+    "same_topk_as_trace": true,
+    "boundary_candidates": [],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p11",
+    "tie_at_boundary": false,
+    "same_topk_as_trace": true,
+    "boundary_candidates": [],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p12",
+    "tie_at_boundary": true,
+    "same_topk_as_trace": true,
+    "boundary_candidates": [
+      [
+        "S9041",
+        "896b042c-adbc-5362-a6f3-8ed624e1d88b",
+        0.25
+      ],
+      [
+        "T1584.006",
+        "0ac8f92d-ebec-5b86-bda9-da4f907217e9",
+        0.25
+      ]
+    ],
+    "gold_in_boundary": false
+  },
+  {
+    "id": "p13",
+    "tie_at_boundary": false,
+    "same_topk_as_trace": true,
+    "boundary_candidates": [],
+    "gold_in_boundary": false
+  }
+]

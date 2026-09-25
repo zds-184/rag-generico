@@ -118,9 +118,52 @@ def run(args: argparse.Namespace) -> Path:
                 status = "ERROR " + res["error"][:60] if res.get("error") else f"{len(res.get('answer', ''))} chars"
                 log(f"[{n:2}/{total}] {q['id']} {mode:>3} {secs:6.1f}s  {status}")
 
-    build_workbook(questions, done, config, run_dir / "calificacion.xlsx")
+    build_workbook(questions, done, config, load_manifest(), run_dir / "calificacion.xlsx")
     write_summary(questions, done, config, run_dir / "summary.json")
     return run_dir
+
+
+def load_manifest() -> dict:
+    path = HERE.parent.parent / "data" / "manifest.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+
+def check_ties(run_dir: Path, api: str) -> None:
+    """Detecta si el último fragmento del top-k está empatado en score con el siguiente (orden inestable)."""
+    config = json.loads((run_dir / "config.json").read_text(encoding="utf-8"))
+    k = config["top_k"]
+    report = []
+    for res in load_done(run_dir / "traces.jsonl").values():
+        if res["mode"] != "rag" or res.get("error"):
+            continue
+        r = requests.post(f"{api}/retrieve", json={"question": res["question"], "top_k": k + 1,
+                                                    "retrieval": config["retrieval"]}, timeout=300).json()
+        now = r["contexts"]
+        trace_ids = [c["point_id"] for c in res["contexts"]]
+        now_ids = [c["point_id"] for c in now[:k]]
+        tie = len(now) > k and abs(now[k - 1]["score"] - now[k]["score"]) < 1e-9
+        gold = set(res["eval"].get("gold_point_ids") or [])
+        report.append({
+            "id": res["eval"]["id"],
+            "tie_at_boundary": tie,
+            "same_topk_as_trace": set(trace_ids) == set(now_ids),
+            "boundary_candidates": [(c["metadata"].get("attack_id"), c["point_id"], round(c["score"], 4))
+                                    for c in now[k - 1:k + 1]] if tie else [],
+            "gold_in_boundary": any(c["point_id"] in gold for c in now[k - 1:k + 1]) if tie else False,
+        })
+        flag = "EMPATE" if tie else "estable"
+        diff = "" if report[-1]["same_topk_as_trace"] else "  (top-k distinto a la traza)"
+        log(f"{res['eval']['id']}: {flag}{diff}" + (f"  gold en frontera" if report[-1]["gold_in_boundary"] else ""))
+    (run_dir / "ties.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    log(f"{sum(1 for x in report if x['tie_at_boundary'])}/{len(report)} preguntas con empate en la frontera -> {run_dir / 'ties.json'}")
+
+
+def rebuild_xlsx(run_dir: Path, questions_path: Path) -> None:
+    questions = load_questions(questions_path)
+    done = load_done(run_dir / "traces.jsonl")
+    config = json.loads((run_dir / "config.json").read_text(encoding="utf-8"))
+    build_workbook(questions, done, config, load_manifest(), run_dir / "calificacion.xlsx")
+    write_summary(questions, done, config, run_dir / "summary.json")
 
 
 # ------------------------------------------------------------------ Excel
@@ -141,7 +184,7 @@ def _header(ws, headers: list[str], widths: list[int]) -> None:
     ws.freeze_panes = "C2"
 
 
-def build_workbook(questions: list[dict], done: dict, config: dict, out: Path) -> None:
+def build_workbook(questions: list[dict], done: dict, config: dict, manifest: dict, out: Path) -> None:
     wb = Workbook()
 
     # ---- Hoja 1: Calificación (una fila por pregunta x modo)
@@ -150,8 +193,9 @@ def build_workbook(questions: list[dict], done: dict, config: dict, out: Path) -
     headers = ["id", "modo", "idioma", "N0 corpus (auto)", "pregunta", "respuesta de referencia",
                "parte NO respondible", "RESPUESTA DEL SISTEMA",
                "N1 gold en top-k (auto)", "N1 rango (auto)", "N1 attack_ids recuperados (auto)",
-               "N2 respuesta (0/1/2)", "N3 citas (0/1/2)", "DIAGNOSTICO", "comentario"]
-    widths = [6, 6, 7, 11, 45, 55, 30, 70, 11, 9, 28, 11, 11, 16, 40]
+               "N2 respuesta (0/1/2)", "N3 citas (0/1/2)", "DIAGNOSTICO", "comentario",
+               "gold_point_ids esperados (auto)", "point_ids recuperados (auto)"]
+    widths = [6, 6, 7, 11, 45, 55, 30, 70, 11, 9, 28, 11, 11, 16, 40, 40, 40]
     _header(ws, headers, widths)
     dv_score = DataValidation(type="list", formula1='"0,1,2,N/A"', allow_blank=True)
     dv_diag = DataValidation(type="list", formula1='"' + ",".join(DIAGNOSES) + '"', allow_blank=True)
@@ -179,6 +223,8 @@ def build_workbook(questions: list[dict], done: dict, config: dict, out: Path) -
                 res.get("answer") or f"(ERROR: {res.get('error', '')})",
                 n1_hit, n1_rank, ", ".join(str(x) for x in ret.get("retrieved_attack_ids", [])) if is_rag else "N/A",
                 "", "" if is_rag else "N/A", "", "",
+                "\n".join(q.get("gold_point_ids") or []) or "-",
+                "\n".join(f"[{c['rank']}] {c['point_id']}" for c in res.get("contexts", [])) if is_rag else "N/A",
             ]
             ws.append(values)
             for col in range(1, len(headers) + 1):
@@ -196,8 +242,9 @@ def build_workbook(questions: list[dict], done: dict, config: dict, out: Path) -
 
     # ---- Hoja 2: Contextos recuperados (para verificar citas [n])
     wc = wb.create_sheet("Contextos")
-    _header(wc, ["id", "modo", "[n] rango", "score", "attack_id", "nombre", "tipo", "chunk", "ES GOLD", "texto"],
-            [6, 6, 8, 9, 12, 28, 16, 8, 9, 120])
+    _header(wc, ["id", "modo", "[n] rango", "score", "attack_id", "nombre", "tipo", "chunk", "ES GOLD", "texto",
+                 "point_id (chunks.jsonl)", "doc_id", "url ATT&CK"],
+            [6, 6, 8, 9, 12, 28, 16, 8, 9, 120, 38, 44, 44])
     r = 2
     for q in questions:
         res = done.get((q["id"], "rag"))
@@ -208,12 +255,56 @@ def build_workbook(questions: list[dict], done: dict, config: dict, out: Path) -
             m = c["metadata"]
             wc.append([q["id"], "RAG", c["rank"], round(c["score"], 4), m.get("attack_id"), m.get("name"),
                        m.get("object_type"), f"{m.get('chunk_index', 0) + 1}/{m.get('n_chunks', 1)}",
-                       "SI" if c["point_id"] in gold else "", c["text"]])
+                       "SI" if c["point_id"] in gold else "", c["text"],
+                       c["point_id"], m.get("doc_id"), m.get("url")])
             wc.cell(row=r, column=10).alignment = WRAP
             if c["point_id"] in gold:
-                for col in range(1, 11):
+                for col in range(1, 14):
                     wc.cell(row=r, column=col).fill = AUTO_FILL
             r += 1
+
+    # ---- Hoja: Prompts (texto literal enviado al LLM, tokens y tiempos)
+    wp = wb.create_sheet("Prompts")
+    _header(wp, ["id", "modo", "modelo", "tokens prompt", "tokens respuesta", "retrieval ms", "generacion ms",
+                 "total ms", "prompt [system]", "prompt [user] (con los fragmentos [n])"],
+            [6, 6, 18, 10, 10, 10, 11, 10, 60, 120])
+    r = 2
+    for q in questions:
+        for mode in config["modes"]:
+            res = done.get((q["id"], mode))
+            if not res:
+                continue
+            usage = res.get("usage") or {}
+            t = res.get("timings_ms") or {}
+            prompt = res.get("prompt") or {}
+            wp.append([q["id"], mode.upper(), res.get("model"), usage.get("prompt_tokens"),
+                       usage.get("completion_tokens"), t.get("retrieval"), t.get("generation"), t.get("total"),
+                       prompt.get("system", ""), prompt.get("user", "")])
+            wp.cell(row=r, column=9).alignment = WRAP
+            wp.cell(row=r, column=10).alignment = WRAP
+            wp.row_dimensions[r].height = 120
+            r += 1
+
+    # ---- Hoja: Config (corrida + corpus)
+    wcfg = wb.create_sheet("Config")
+    wcfg.column_dimensions["A"].width = 30
+    wcfg.column_dimensions["B"].width = 70
+    wcfg.append(["CORRIDA", str(out.parent.name)])
+    wcfg.cell(row=1, column=1).font = Font(bold=True)
+    for k, v in config.items():
+        wcfg.append([k, json.dumps(v, ensure_ascii=False) if isinstance(v, (list, dict)) else v])
+    wcfg.append([])
+    wcfg.append(["CORPUS (data/manifest.json)", ""])
+    wcfg.cell(row=wcfg.max_row, column=1).font = Font(bold=True)
+    for k, v in manifest.items():
+        wcfg.append([k, json.dumps(v, ensure_ascii=False) if isinstance(v, (list, dict)) else v])
+    wcfg.append([])
+    wcfg.append(["TRAZABILIDAD", "questions.jsonl (diseño y gold) -> config.json (corrida) -> traces.jsonl (registro "
+                                 "primario: contextos, prompt, tokens, tiempos) -> calificacion.xlsx (esta vista + notas "
+                                 "manuales). point_id enlaza con data/chunks.jsonl; doc_id/url con documents.jsonl y "
+                                 "attack.mitre.org."])
+    wcfg.cell(row=wcfg.max_row, column=1).font = Font(bold=True)
+    wcfg.cell(row=wcfg.max_row, column=2).alignment = WRAP
 
     # ---- Hoja 3: Guía de calificación
     wg = wb.create_sheet("Guia")
@@ -315,7 +406,15 @@ def main() -> None:
     ap.add_argument("--model", default=None)
     ap.add_argument("--timeout", type=int, default=1800)
     ap.add_argument("--resume", default=None, help="carpeta de una corrida anterior para continuarla")
+    ap.add_argument("--rebuild-xlsx", default=None, help="regenera calificacion.xlsx de una corrida sin volver a consultar")
+    ap.add_argument("--check-ties", default=None, help="verifica empates de score en la frontera del top-k de una corrida")
     args = ap.parse_args()
+    if args.check_ties:
+        check_ties(Path(args.check_ties), args.api)
+        return
+    if args.rebuild_xlsx:
+        rebuild_xlsx(Path(args.rebuild_xlsx), Path(args.questions))
+        return
     run_dir = run(args)
     log(f"Listo. Resultados en {run_dir}")
 
