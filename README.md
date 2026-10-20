@@ -10,6 +10,31 @@ Arquitectura RAG **deliberadamente genérica** (chunking por caracteres → embe
 | Interfaz web | Streamlit, selector **RAG / Solo LLM / Comparar ambos** | 8501 |
 | Corpus | MITRE ATT&CK STIX 2.1 desde `mitre-attack/attack-stix-data` (siempre la última versión) | — |
 
+## Evaluación de este sistema (para revisión)
+
+Este RAG es el *sistema bajo prueba* de un trabajo de tesis (USFQ) sobre **evaluación diagnóstica**: no se optimiza el RAG; se califica cada respuesta y se localiza en qué eslabón falla (corpus → recuperación → generación → citas).
+
+**Empieza por [`eval/pilot/protocol_v2.2.md`](eval/pilot/protocol_v2.2.md)**, el protocolo vigente (consolida el v1.1 y el borrador v2). Resumen de una página: [`eval/pilot/resumen_reunion.md`](eval/pilot/resumen_reunion.md).
+
+| Qué | Dónde (`eval/pilot/`) |
+|---|---|
+| Piloto original, **congelado** (13 preguntas × 2 modos, con y sin RAG) | `questions.jsonl`, `run_pilot.py`, `results/20260922_064359/` |
+| Protocolo v1.1 (rúbrica de una nota por nivel, usada en el piloto) | `protocol.md` |
+| Herramientas de la rúbrica v2 (calificación por afirmación, N1 por evidencia, comparación con y sin RAG) | `evidence_build.py`, `evidence_check.py`, `comparar_modos.py`, `build_calificacion_v2.py` |
+| Datos de apoyo | `evidence_pilot.json`, `afirmaciones_ejemplos.csv`, `results/20260922_064359/n1_v2.json` |
+| Plantillas de calificación en Excel | `v2/calificacion_v2_DEMO.xlsx` (con 8 respuestas de ejemplo), `v2/calificacion_v2_piloto.xlsx` (en blanco) |
+
+Estado: borrador para revisión del director; un solo evaluador, 13 preguntas y una corrida, por lo que los resultados del piloto son descriptivos y no generalizables.
+
+Reproducir las herramientas sobre la corrida del piloto (no requieren Ollama ni Qdrant; `evidence_check.py` escribe `n1_v2.json` junto a la corrida y `comparar_modos.py` solo imprime):
+
+```bash
+python eval/pilot/evidence_check.py eval/pilot/results/20260922_064359
+python eval/pilot/comparar_modos.py eval/pilot/afirmaciones_ejemplos.csv
+```
+
+Una corrida nueva (`python eval/pilot/run_pilot.py`) requiere el sistema levantado y tarda ~35 min en CPU. No usar `run_pilot.py --rebuild-xlsx` sobre un libro ya calificado: sobrescribe la calificación manual.
+
 ## Arquitectura
 
 ```
@@ -194,7 +219,7 @@ RAG/
 │     ├─ pipeline.py         # retrieve -> prompt -> generate
 │     └─ ingest.py           # python -m rag.ingest
 ├─ ui/app.py                 # Streamlit
-├─ eval/                     # cliente de ejemplo + preguntas de muestra
+├─ eval/                     # cliente de ejemplo, preguntas de muestra y piloto de evaluación (ver protocol_v2.2.md)
 └─ data/                     # artefactos de la ingesta (volumen)
 ```
 
