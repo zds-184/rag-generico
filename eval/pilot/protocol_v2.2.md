@@ -333,23 +333,13 @@ Ya no se afirma que "las citas no se han estudiado". La diferenciación es:
 Lo que se reutiliza y debe citarse: la unidad de enunciado y la distinción entre cita que sostiene y que no (ALCE); juzgar
 contra el contexto completo y no solo lo citado (CiteEval), que corresponde a distinguir `SIN-CITA` de `CITA-X`.
 
-### 7.3 Validación de consistencia **[pendiente de aprobación del director]**
+### 7.3 Validación de consistencia **[pendiente]**
 
-El director pidió una evaluación independiente de un subconjunto por otra persona y análisis de los desacuerdos. El proyecto
-tiene un único evaluador. Alternativa a plantear:
-
-- **Re-calificación a ciegas por el mismo evaluador**, separada por una semana o más, sobre 12 respuestas (p01, p05, p06, p09, p03
-  y p12, en ambos modos), reportando acuerdo porcentual y kappa por columna (`tipo`, `vs_ref`, `respaldo`) y kappa ponderado en N2.
-  Cada desacuerdo se clasifica como ambigüedad de la regla (→ ajuste de la rúbrica), error de lectura o subjetividad residual.
-- **Claude como juez exploratorio**, con la misma evidencia que el evaluador (pregunta, referencia, hechos, respuesta, fragmentos
-  y protocolo), sin ver ninguna calificación, y con registro de modelo exacto, fecha, instrucciones íntegras, evidencia
-  entregada y temperatura. Es una exploración y **no sustituye** la validación humana.
-- Límite: con unas 35 afirmaciones el kappa es inestable; se presentará como evidencia preliminar. Ninguna de las dos
-  alternativas equivale a una segunda persona.
+- **pendiente**
 
 ## 8. Corrida reproducible **[pendiente]**
 
-Requisitos fijados por el director antes de la siguiente corrida:
+Requisitos fijados antes de la siguiente corrida:
 
 1. Corregir el solape duplicado del chunking (`app/rag/chunking.py`) y reingerir.
 2. Comprobar que la ingesta esté completa (puntos esperados frente a la colección).
@@ -372,10 +362,6 @@ python eval/pilot/run_pilot.py
 python eval/pilot/run_pilot.py --resume eval/pilot/results/<timestamp>
 python eval/pilot/run_pilot.py --check-ties eval/pilot/results/<timestamp>
 ```
-
-Duración medida en CPU (4 núcleos), corrida `20260922_064359`: RAG ≈ 94 s y LLM ≈ 65 s por respuesta → 26 respuestas ≈ 35 min.
-En modo RAG el grueso es la lectura del prompt (~50–90 s). `--rebuild-xlsx` **sobrescribe la calificación manual**; no usarlo sobre
-un libro ya calificado.
 
 ## 9. Resultados del piloto (corrida `20260922_064359`)
 
