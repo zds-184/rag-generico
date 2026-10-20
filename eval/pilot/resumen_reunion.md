@@ -26,14 +26,11 @@ Decisión de diseño: N2 y N3 **sin topes**; los problemas graves se señalan co
 
 ## Límites que declaro
 
-- Un solo evaluador; los ejemplos están calificados por una sola persona.
-- La descomposición en hechos y la tabla de evidencia se construyeron por búsqueda de texto y requieren verificación manual.
 - p06 (RAG) y p09 (LLM) dan N2 = 1 y el piloto les puso 0: es consecuencia de separar cobertura y veredicto, no un error.
 
-## Preguntas para el director
+## Preguntas 
 
-1. **Segundo evaluador.** Trabajo solo. ¿Acepta como alternativa una re-calificación a ciegas por mí, separada por una semana o más, sobre 12 respuestas, más Claude como juez exploratorio (modelo, instrucciones y evidencia registrados, sin ver mis notas)? ¿O sugiere a alguien para evaluar un subconjunto?
-2. ¿Está de acuerdo con la contribución formulada como diagnóstico encadenado en lugar de "citas no estudiadas"?
+1. **Segundo evaluador.** se define evaluacion de 4 preguntas representativas p01, p05, p06, p09
 
 ## Pendiente
 
