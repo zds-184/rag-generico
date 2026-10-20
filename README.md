@@ -78,6 +78,7 @@ Una corrida nueva (`python eval/pilot/run_pilot.py`) requiere el sistema levanta
 
 ```bash
 cd D:/DS_USFQ/CAPSTON/RAG
+cp .env.example .env          # configuración local (el repositorio solo versiona .env.example)
 docker compose up -d --build
 ```
 

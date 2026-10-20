@@ -1,0 +1,326 @@
+{
+ "p01": {
+  "n1": "NINGUNA",
+  "hechos_llegaron": "0/5",
+  "hechos_llegaron_incl_alt_parcial": "1/5",
+  "mejor_rango": 4,
+  "hit_gold": false,
+  "recall_gold": "0/2",
+  "hechos": [
+   {
+    "fact": "H1",
+    "text": "M1038 Execution Prevention",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H2",
+    "text": "M1045 Code Signing",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H3",
+    "text": "M1026 Privileged Account Management",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H4",
+    "text": "M1049 Antivirus/Antimalware",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H5",
+    "text": "M1042 Disable or Remove Feature or Program (PowerShell/WinRM)",
+    "llego": "ALT-P",
+    "rank": 4
+   }
+  ]
+ },
+ "p02": {
+  "n1": "PARTE",
+  "hechos_llegaron": "1/5",
+  "hechos_llegaron_incl_alt_parcial": "1/5",
+  "mejor_rango": 2,
+  "hit_gold": true,
+  "recall_gold": "1/2",
+  "hechos": [
+   {
+    "fact": "H1",
+    "text": "Phishing pertenece a Initial Access",
+    "llego": "SI",
+    "rank": 2
+   },
+   {
+    "fact": "H2",
+    "text": "T1566.001 Spearphishing Attachment",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H3",
+    "text": "T1566.002 Spearphishing Link",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H4",
+    "text": "T1566.003 Spearphishing via Service",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H5",
+    "text": "T1566.004 Spearphishing Voice",
+    "llego": "NO",
+    "rank": null
+   }
+  ]
+ },
+ "p03": {
+  "n1": "TODA",
+  "hechos_llegaron": "2/2",
+  "hechos_llegaron_incl_alt_parcial": "2/2",
+  "mejor_rango": 1,
+  "hit_gold": true,
+  "recall_gold": "1/1",
+  "hechos": [
+   {
+    "fact": "H1",
+    "text": "Persistencia = el adversario intenta mantener su punto de apoyo",
+    "llego": "SI",
+    "rank": 1
+   },
+   {
+    "fact": "H2",
+    "text": "Conservar acceso pese a reinicios, cambios de credenciales u otras interrupciones",
+    "llego": "SI",
+    "rank": 1
+   }
+  ]
+ },
+ "p04": {
+  "n1": "TODA",
+  "hechos_llegaron": "2/2",
+  "hechos_llegaron_incl_alt_parcial": "2/2",
+  "mejor_rango": 1,
+  "hit_gold": true,
+  "recall_gold": "1/1",
+  "hechos": [
+   {
+    "fact": "H1",
+    "text": "Cobalt Strike: herramienta comercial de acceso remoto / simulación de adversarios",
+    "llego": "SI",
+    "rank": 1
+   },
+   {
+    "fact": "H2",
+    "text": "Aprovecha capacidades de Metasploit y Mimikatz",
+    "llego": "SI",
+    "rank": 1
+   }
+  ]
+ },
+ "p05": {
+  "n1": "PARTE",
+  "hechos_llegaron": "2/4",
+  "hechos_llegaron_incl_alt_parcial": "2/4",
+  "mejor_rango": 1,
+  "hit_gold": false,
+  "recall_gold": "0/3",
+  "hechos": [
+   {
+    "fact": "H1",
+    "text": "APT29 usa Mimikatz (G0016 <-> S0002)",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H2",
+    "text": "Mimikatz implementa T1550.003 Pass the Ticket",
+    "llego": "ALT",
+    "rank": 1
+   },
+   {
+    "fact": "H3",
+    "text": "Mimikatz implementa T1558.001 Golden Ticket",
+    "llego": "ALT",
+    "rank": 5
+   },
+   {
+    "fact": "H4",
+    "text": "Mimikatz implementa T1558.002 Silver Ticket",
+    "llego": "NO",
+    "rank": null
+   }
+  ]
+ },
+ "p06": {
+  "n1": "TODA",
+  "hechos_llegaron": "3/3",
+  "hechos_llegaron_incl_alt_parcial": "3/3",
+  "mejor_rango": 5,
+  "hit_gold": true,
+  "recall_gold": "1/1",
+  "hechos": [
+   {
+    "fact": "H1",
+    "text": "Lazarus usa T1059.001 PowerShell",
+    "llego": "SI",
+    "rank": 5
+   },
+   {
+    "fact": "H2",
+    "text": "Lazarus usa T1059.003 Windows Command Shell",
+    "llego": "SI",
+    "rank": 5
+   },
+   {
+    "fact": "H3",
+    "text": "Lazarus usa T1059.005 Visual Basic",
+    "llego": "SI",
+    "rank": 5
+   }
+  ]
+ },
+ "p07": {
+  "n1": "TODA",
+  "hechos_llegaron": "3/3",
+  "hechos_llegaron_incl_alt_parcial": "3/3",
+  "mejor_rango": 1,
+  "hit_gold": true,
+  "recall_gold": "2/2",
+  "hechos": [
+   {
+    "fact": "H1",
+    "text": "Nearest Neighbor Campaign: APT28 password spray contra servicios públicos",
+    "llego": "SI",
+    "rank": 2
+   },
+   {
+    "fact": "H2",
+    "text": "Herramienta de fuerza bruta: ~4 intentos por hora por cuenta",
+    "llego": "SI",
+    "rank": 1
+   },
+   {
+    "fact": "H3",
+    "text": "Clúster de Kubernetes para password spray distribuido",
+    "llego": "SI",
+    "rank": 1
+   }
+  ]
+ },
+ "p08": {
+  "n1": "NINGUNA",
+  "hechos_llegaron": "0/3",
+  "hechos_llegaron_incl_alt_parcial": "0/3",
+  "mejor_rango": null,
+  "hit_gold": false,
+  "recall_gold": "0/1",
+  "hechos": [
+   {
+    "fact": "H1",
+    "text": "M1027 Password Policies (NIST)",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H2",
+    "text": "M1032 Multi-factor Authentication",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H3",
+    "text": "M1036 Account Use Policies",
+    "llego": "NO",
+    "rank": null
+   }
+  ]
+ },
+ "p09": {
+  "n1": "PARTE",
+  "hechos_llegaron": "2/6",
+  "hechos_llegaron_incl_alt_parcial": "2/6",
+  "mejor_rango": 5,
+  "hit_gold": true,
+  "recall_gold": "1/2",
+  "hechos": [
+   {
+    "fact": "H1",
+    "text": "M1031 Network Intrusion Prevention",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H2",
+    "text": "M1021 Restrict Web-Based Content",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H3",
+    "text": "M1017 User Training",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H4",
+    "text": "M1049 Antivirus/Antimalware",
+    "llego": "NO",
+    "rank": null
+   },
+   {
+    "fact": "H5",
+    "text": "M1054 Software Configuration (SPF, DKIM, DMARC)",
+    "llego": "SI",
+    "rank": 5
+   },
+   {
+    "fact": "H6",
+    "text": "M1047 Audit",
+    "llego": "SI",
+    "rank": 5
+   }
+  ]
+ },
+ "p10": {
+  "n1": "N/A",
+  "hechos_llegaron": "0/0",
+  "hechos_llegaron_incl_alt_parcial": "0/0",
+  "mejor_rango": null,
+  "hit_gold": null,
+  "recall_gold": null,
+  "hechos": []
+ },
+ "p11": {
+  "n1": "N/A",
+  "hechos_llegaron": "0/0",
+  "hechos_llegaron_incl_alt_parcial": "0/0",
+  "mejor_rango": null,
+  "hit_gold": null,
+  "recall_gold": null,
+  "hechos": []
+ },
+ "p12": {
+  "n1": "N/A",
+  "hechos_llegaron": "0/0",
+  "hechos_llegaron_incl_alt_parcial": "0/0",
+  "mejor_rango": null,
+  "hit_gold": null,
+  "recall_gold": null,
+  "hechos": []
+ },
+ "p13": {
+  "n1": "N/A",
+  "hechos_llegaron": "0/0",
+  "hechos_llegaron_incl_alt_parcial": "0/0",
+  "mejor_rango": null,
+  "hit_gold": null,
+  "recall_gold": null,
+  "hechos": []
+ }
+}

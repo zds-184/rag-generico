@@ -1,0 +1,692 @@
+{
+ "p01": [
+  {
+   "fact": "H1",
+   "text": "M1038 Execution Prevention",
+   "evidence": [
+    {
+     "point_id": "1a6dadb3-8062-5fe2-893a-16bb2f3f9595",
+     "attack_id": "T1059.001",
+     "chunk": "2/11",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H2",
+   "text": "M1045 Code Signing",
+   "evidence": [
+    {
+     "point_id": "1a6dadb3-8062-5fe2-893a-16bb2f3f9595",
+     "attack_id": "T1059.001",
+     "chunk": "2/11",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H3",
+   "text": "M1026 Privileged Account Management",
+   "evidence": [
+    {
+     "point_id": "1a6dadb3-8062-5fe2-893a-16bb2f3f9595",
+     "attack_id": "T1059.001",
+     "chunk": "2/11",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H4",
+   "text": "M1049 Antivirus/Antimalware",
+   "evidence": [
+    {
+     "point_id": "124ac693-8c28-5a9f-9362-e91899a4361d",
+     "attack_id": "T1059.001",
+     "chunk": "3/11",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H5",
+   "text": "M1042 Disable or Remove Feature or Program (PowerShell/WinRM)",
+   "evidence": [
+    {
+     "point_id": "514508fe-e4e3-57ac-aa02-c2a315d71214",
+     "attack_id": "T1059",
+     "chunk": "4/10",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "12155368-afb0-5e72-bdbd-189ee840f96e",
+     "attack_id": "T1059",
+     "chunk": "5/10",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "124ac693-8c28-5a9f-9362-e91899a4361d",
+     "attack_id": "T1059.001",
+     "chunk": "3/11",
+     "kind": "gold"
+    }
+   ]
+  }
+ ],
+ "p02": [
+  {
+   "fact": "H1",
+   "text": "Phishing pertenece a Initial Access",
+   "evidence": [
+    {
+     "point_id": "af42649d-952f-5dfb-afab-8c8e51a00019",
+     "attack_id": "T1566",
+     "chunk": "0/8",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H2",
+   "text": "T1566.001 Spearphishing Attachment",
+   "evidence": [
+    {
+     "point_id": "22e1f629-ed75-57fb-9dfd-767e49dde3de",
+     "attack_id": "T1566",
+     "chunk": "5/8",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H3",
+   "text": "T1566.002 Spearphishing Link",
+   "evidence": [
+    {
+     "point_id": "22e1f629-ed75-57fb-9dfd-767e49dde3de",
+     "attack_id": "T1566",
+     "chunk": "5/8",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H4",
+   "text": "T1566.003 Spearphishing via Service",
+   "evidence": [
+    {
+     "point_id": "22e1f629-ed75-57fb-9dfd-767e49dde3de",
+     "attack_id": "T1566",
+     "chunk": "5/8",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H5",
+   "text": "T1566.004 Spearphishing Voice",
+   "evidence": [
+    {
+     "point_id": "22e1f629-ed75-57fb-9dfd-767e49dde3de",
+     "attack_id": "T1566",
+     "chunk": "5/8",
+     "kind": "gold"
+    }
+   ]
+  }
+ ],
+ "p03": [
+  {
+   "fact": "H1",
+   "text": "Persistencia = el adversario intenta mantener su punto de apoyo",
+   "evidence": [
+    {
+     "point_id": "9802bb4f-5927-5a9c-90e8-8dcbb07af2ef",
+     "attack_id": "TA0003",
+     "chunk": "1/2",
+     "kind": "alt"
+    },
+    {
+     "point_id": "259ce106-5bf5-5095-9060-49c5e3501b01",
+     "attack_id": "TA0003",
+     "chunk": "0/2",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H2",
+   "text": "Conservar acceso pese a reinicios, cambios de credenciales u otras interrupciones",
+   "evidence": [
+    {
+     "point_id": "259ce106-5bf5-5095-9060-49c5e3501b01",
+     "attack_id": "TA0003",
+     "chunk": "0/2",
+     "kind": "gold"
+    }
+   ]
+  }
+ ],
+ "p04": [
+  {
+   "fact": "H1",
+   "text": "Cobalt Strike: herramienta comercial de acceso remoto / simulación de adversarios",
+   "evidence": [
+    {
+     "point_id": "71c1c43a-b0b2-569d-8a65-7d55faff7ef8",
+     "attack_id": "S0154",
+     "chunk": "0/4",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H2",
+   "text": "Aprovecha capacidades de Metasploit y Mimikatz",
+   "evidence": [
+    {
+     "point_id": "453037f2-27fc-596c-9ac1-1bac80182d56",
+     "attack_id": "S0154",
+     "chunk": "1/4",
+     "kind": "alt"
+    },
+    {
+     "point_id": "71c1c43a-b0b2-569d-8a65-7d55faff7ef8",
+     "attack_id": "S0154",
+     "chunk": "0/4",
+     "kind": "gold"
+    }
+   ]
+  }
+ ],
+ "p05": [
+  {
+   "fact": "H1",
+   "text": "APT29 usa Mimikatz (G0016 <-> S0002)",
+   "evidence": [
+    {
+     "point_id": "06bdc461-ede8-5f49-9b73-19f127c7b746",
+     "attack_id": "G0016",
+     "chunk": "3/4",
+     "kind": "gold"
+    },
+    {
+     "point_id": "bd4e8cd4-5326-5459-bc70-8e91db2275a6",
+     "attack_id": "S0002",
+     "chunk": "1/2",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H2",
+   "text": "Mimikatz implementa T1550.003 Pass the Ticket",
+   "evidence": [
+    {
+     "point_id": "750bebf0-a34b-5f77-9ddb-6fe2a3f246ba",
+     "attack_id": "T1550.003",
+     "chunk": "4/5",
+     "kind": "alt"
+    },
+    {
+     "point_id": "765c8a68-965f-5232-b1a9-29c9ef4a5769",
+     "attack_id": "S0002",
+     "chunk": "0/2",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H3",
+   "text": "Mimikatz implementa T1558.001 Golden Ticket",
+   "evidence": [
+    {
+     "point_id": "aad4bf53-34e3-513d-a9bc-9661d1985753",
+     "attack_id": "T1558.001",
+     "chunk": "3/4",
+     "kind": "alt"
+    },
+    {
+     "point_id": "765c8a68-965f-5232-b1a9-29c9ef4a5769",
+     "attack_id": "S0002",
+     "chunk": "0/2",
+     "kind": "gold"
+    },
+    {
+     "point_id": "bd4e8cd4-5326-5459-bc70-8e91db2275a6",
+     "attack_id": "S0002",
+     "chunk": "1/2",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H4",
+   "text": "Mimikatz implementa T1558.002 Silver Ticket",
+   "evidence": [
+    {
+     "point_id": "521e56f6-958f-5bc5-bf3c-c5bb14de8b47",
+     "attack_id": "T1558.002",
+     "chunk": "3/4",
+     "kind": "alt"
+    },
+    {
+     "point_id": "765c8a68-965f-5232-b1a9-29c9ef4a5769",
+     "attack_id": "S0002",
+     "chunk": "0/2",
+     "kind": "gold"
+    },
+    {
+     "point_id": "bd4e8cd4-5326-5459-bc70-8e91db2275a6",
+     "attack_id": "S0002",
+     "chunk": "1/2",
+     "kind": "gold"
+    }
+   ]
+  }
+ ],
+ "p06": [
+  {
+   "fact": "H1",
+   "text": "Lazarus usa T1059.001 PowerShell",
+   "evidence": [
+    {
+     "point_id": "dc74f950-6eaf-5688-bacf-2f7442918162",
+     "attack_id": "C0022",
+     "chunk": "1/3",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "6ed07624-3924-5130-b7e4-286c629a9139",
+     "attack_id": "G0082",
+     "chunk": "1/3",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "0d2292e8-a5c4-53b9-8609-c9c9081c4f2c",
+     "attack_id": "G0094",
+     "chunk": "2/7",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "e5ef14ca-4daf-577b-996d-33078b10d102",
+     "attack_id": "S0241",
+     "chunk": "1/2",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "124ac693-8c28-5a9f-9362-e91899a4361d",
+     "attack_id": "T1059.001",
+     "chunk": "3/11",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "f37aab34-1c20-567b-9359-2df3509e4a12",
+     "attack_id": "T1059.001",
+     "chunk": "4/11",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "d5484bb9-a214-54b4-8984-3d35d6ac7bfe",
+     "attack_id": "G0032",
+     "chunk": "2/6",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H2",
+   "text": "Lazarus usa T1059.003 Windows Command Shell",
+   "evidence": [
+    {
+     "point_id": "dc74f950-6eaf-5688-bacf-2f7442918162",
+     "attack_id": "C0022",
+     "chunk": "1/3",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "89fd0172-5ed0-5d71-b181-2fac5b60627d",
+     "attack_id": "G0067",
+     "chunk": "1/3",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "6ed07624-3924-5130-b7e4-286c629a9139",
+     "attack_id": "G0082",
+     "chunk": "1/3",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "0d2292e8-a5c4-53b9-8609-c9c9081c4f2c",
+     "attack_id": "G0094",
+     "chunk": "2/7",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "db7dcd91-c6df-5d30-94c0-fe26e4508bbe",
+     "attack_id": "S0180",
+     "chunk": "0/1",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "9696f17a-ad58-5089-a39b-f4208fc8215d",
+     "attack_id": "S0238",
+     "chunk": "0/2",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "783f7695-f71d-56b4-b488-28a2fa2cf1c5",
+     "attack_id": "S0239",
+     "chunk": "1/2",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "e5ef14ca-4daf-577b-996d-33078b10d102",
+     "attack_id": "S0241",
+     "chunk": "1/2",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "1151b722-f74f-5e4b-b052-9e54756555cf",
+     "attack_id": "S0246",
+     "chunk": "0/1",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "77ea47c9-d1b8-55f4-8c12-d291eda4256b",
+     "attack_id": "S0263",
+     "chunk": "0/1",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "bd7c0d50-28db-50ff-a535-2ee34af7d704",
+     "attack_id": "S0271",
+     "chunk": "0/1",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "72ef6bf9-f375-5969-8f05-be8b358a87ba",
+     "attack_id": "S0347",
+     "chunk": "0/1",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "c1ca73ba-89ff-5f0c-8f89-6e56fd94d82f",
+     "attack_id": "S0376",
+     "chunk": "0/1",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "eef95567-2a5e-583f-a774-7aff5d7c7054",
+     "attack_id": "S0448",
+     "chunk": "1/2",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "ada8fb87-7e41-5dc6-97bb-d9bf9eecd2b4",
+     "attack_id": "S0567",
+     "chunk": "1/2",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "0709836a-0006-5897-93e1-50c26afe3482",
+     "attack_id": "S0586",
+     "chunk": "0/1",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "e73aa2ed-deaa-51f3-b4f8-c9ff9f97152b",
+     "attack_id": "S0593",
+     "chunk": "0/1",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "b379ea44-c15f-51b8-99ec-6b81e0c96c3f",
+     "attack_id": "S1182",
+     "chunk": "0/1",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "9b88b275-e397-51a7-93dd-d62b443d7f2e",
+     "attack_id": "T1059.003",
+     "chunk": "2/8",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "d5484bb9-a214-54b4-8984-3d35d6ac7bfe",
+     "attack_id": "G0032",
+     "chunk": "2/6",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H3",
+   "text": "Lazarus usa T1059.005 Visual Basic",
+   "evidence": [
+    {
+     "point_id": "3d7133a7-8d6e-5af1-82eb-005e7bd042ed",
+     "attack_id": "C0013",
+     "chunk": "0/1",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "dc74f950-6eaf-5688-bacf-2f7442918162",
+     "attack_id": "C0022",
+     "chunk": "1/3",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "89fd0172-5ed0-5d71-b181-2fac5b60627d",
+     "attack_id": "G0067",
+     "chunk": "1/3",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "6ed07624-3924-5130-b7e4-286c629a9139",
+     "attack_id": "G0082",
+     "chunk": "1/3",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "0d2292e8-a5c4-53b9-8609-c9c9081c4f2c",
+     "attack_id": "G0094",
+     "chunk": "2/7",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "77ea47c9-d1b8-55f4-8c12-d291eda4256b",
+     "attack_id": "S0263",
+     "chunk": "0/1",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "7ebfd4f4-35e8-5cc1-9297-bcf7a34f9394",
+     "attack_id": "T1059.005",
+     "chunk": "4/11",
+     "kind": "alt-parcial"
+    },
+    {
+     "point_id": "d5484bb9-a214-54b4-8984-3d35d6ac7bfe",
+     "attack_id": "G0032",
+     "chunk": "2/6",
+     "kind": "gold"
+    }
+   ]
+  }
+ ],
+ "p07": [
+  {
+   "fact": "H1",
+   "text": "Nearest Neighbor Campaign: APT28 password spray contra servicios públicos",
+   "evidence": [
+    {
+     "point_id": "e354faa7-5720-5886-81b2-ff67b3e072ef",
+     "attack_id": "C0051",
+     "chunk": "0/2",
+     "kind": "alt"
+    },
+    {
+     "point_id": "9f28e3b3-46cd-5d07-ba72-040ae936815b",
+     "attack_id": "C0051",
+     "chunk": "1/2",
+     "kind": "alt"
+    },
+    {
+     "point_id": "dd29bdfa-13a3-57b6-911c-728b3adfc8f2",
+     "attack_id": "G0007",
+     "chunk": "5/6",
+     "kind": "alt"
+    },
+    {
+     "point_id": "ef7bd43e-42d4-5dd2-bc0e-1abd0cbf802f",
+     "attack_id": "T1110.003",
+     "chunk": "5/9",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H2",
+   "text": "Herramienta de fuerza bruta: ~4 intentos por hora por cuenta",
+   "evidence": [
+    {
+     "point_id": "bda60f05-afc9-5623-a785-ce6ba574ed8e",
+     "attack_id": "T1110.003",
+     "chunk": "7/9",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H3",
+   "text": "Clúster de Kubernetes para password spray distribuido",
+   "evidence": [
+    {
+     "point_id": "bda60f05-afc9-5623-a785-ce6ba574ed8e",
+     "attack_id": "T1110.003",
+     "chunk": "7/9",
+     "kind": "gold"
+    }
+   ]
+  }
+ ],
+ "p08": [
+  {
+   "fact": "H1",
+   "text": "M1027 Password Policies (NIST)",
+   "evidence": [
+    {
+     "point_id": "9ba81dbd-2475-5872-aac0-2ad4b53a7ba3",
+     "attack_id": "T1110.003",
+     "chunk": "4/9",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H2",
+   "text": "M1032 Multi-factor Authentication",
+   "evidence": [
+    {
+     "point_id": "9ba81dbd-2475-5872-aac0-2ad4b53a7ba3",
+     "attack_id": "T1110.003",
+     "chunk": "4/9",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H3",
+   "text": "M1036 Account Use Policies",
+   "evidence": [
+    {
+     "point_id": "9ba81dbd-2475-5872-aac0-2ad4b53a7ba3",
+     "attack_id": "T1110.003",
+     "chunk": "4/9",
+     "kind": "gold"
+    }
+   ]
+  }
+ ],
+ "p09": [
+  {
+   "fact": "H1",
+   "text": "M1031 Network Intrusion Prevention",
+   "evidence": [
+    {
+     "point_id": "60567a05-573f-5585-bac9-fb6962c3a42f",
+     "attack_id": "T1566",
+     "chunk": "4/8",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H2",
+   "text": "M1021 Restrict Web-Based Content",
+   "evidence": [
+    {
+     "point_id": "60567a05-573f-5585-bac9-fb6962c3a42f",
+     "attack_id": "T1566",
+     "chunk": "4/8",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H3",
+   "text": "M1017 User Training",
+   "evidence": [
+    {
+     "point_id": "60567a05-573f-5585-bac9-fb6962c3a42f",
+     "attack_id": "T1566",
+     "chunk": "4/8",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H4",
+   "text": "M1049 Antivirus/Antimalware",
+   "evidence": [
+    {
+     "point_id": "60567a05-573f-5585-bac9-fb6962c3a42f",
+     "attack_id": "T1566",
+     "chunk": "4/8",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H5",
+   "text": "M1054 Software Configuration (SPF, DKIM, DMARC)",
+   "evidence": [
+    {
+     "point_id": "60567a05-573f-5585-bac9-fb6962c3a42f",
+     "attack_id": "T1566",
+     "chunk": "4/8",
+     "kind": "gold"
+    },
+    {
+     "point_id": "22e1f629-ed75-57fb-9dfd-767e49dde3de",
+     "attack_id": "T1566",
+     "chunk": "5/8",
+     "kind": "gold"
+    }
+   ]
+  },
+  {
+   "fact": "H6",
+   "text": "M1047 Audit",
+   "evidence": [
+    {
+     "point_id": "22e1f629-ed75-57fb-9dfd-767e49dde3de",
+     "attack_id": "T1566",
+     "chunk": "5/8",
+     "kind": "gold"
+    }
+   ]
+  }
+ ]
+}

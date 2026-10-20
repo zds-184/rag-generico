@@ -4,3 +4,9 @@ __pycache__/
 *.pyc
 .venv/
 eval/results/
+
+# --- Archivos locales que no deben versionarse ---
+.env
+~$*
+~WRL*.tmp
+*.tmp

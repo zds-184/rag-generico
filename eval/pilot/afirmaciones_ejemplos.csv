@@ -1,0 +1,28 @@
+﻿qid,modo,n,afirmacion,tipo,vs_ref,hecho_ref,zona,respaldo,cita_n,fragmento_sostiene,nota
+p05,rag,1,APT29 (G0016) utiliza Mimikatz,hecho,CORRECTA,H1,ref,SIN-RESPALDO,1,,correcta pero ningún fragmento vincula APT29 con Mimikatz
+p05,rag,2,APT29 usó ataques Kerberos para movimiento lateral,hecho,FUERA_REF,,ref,SOSTENIDA,1,1,
+p05,rag,3,Mimikatz implementa T1550.003 Pass the Ticket,hecho,CORRECTA,H2,ref,SOSTENIDA,1,1,
+p05,llm,1,APT29 no utiliza directamente Mimikatz,hecho,INCORRECTA,H1,ref,,,,contradice H1
+p05,llm,2,La técnica de tickets Kerberos es T1547.001 Exploitation of Kerberos,hecho,INCORRECTA,,ref,,,,T1547.001 es Registry Run Keys; ese nombre no existe en el corpus
+p05,llm,3,Mimikatz extrae credenciales de memoria,hecho,FUERA_REF,,ref,,,,
+p09,rag,1,Los pasajes no listan ninguna mitigación para T1566,abstencion,INCORRECTA,H1;H2;H3;H4;H5;H6,ref,,,,H5 y H6 sí llegaron
+p09,rag,2,"Los pasajes mencionan SPF, DKIM y DMARC para filtrado",hecho,CORRECTA,,ref,SOSTENIDA,5,5,verdadera pero no cubre H5: la respuesta niega que sean mitigaciones
+p09,rag,3,No hay producto comercial recomendado,abstencion,CORRECTA,,no_resp,,,,
+p09,llm,1,ATT&CK no lista mitigaciones específicas para T1566,hecho,INCORRECTA,,ref,,,,
+p09,llm,2,"Recomienda DMARC, SPF y DKIM",hecho,CORRECTA,H5,ref,,,,
+p09,llm,3,Recomienda educación de usuarios,hecho,CORRECTA,H3,ref,,,,
+p09,llm,4,"Recomienda filtrado de contenido, inteligencia de amenazas y análisis de comportamiento",hecho,FUERA_REF,,ref,,,,
+p09,llm,5,MITRE no recomienda un producto comercial concreto,hecho,CORRECTA,,no_resp,,,,
+p09,llm,6,Microsoft 365 Defender es ampliamente referenciado en ATT&CK,hecho,FUERA_REF,,no_resp,,,,contradice la afirmación anterior
+p01,rag,1,Los contextos no dan información sobre mitigaciones de T1059.001,abstencion,INCORRECTA,H1;H2;H3;H4;H5,ref,,,,H5 solo llegó como evidencia parcial (ALT-P)
+p01,llm,1,ATT&CK no proporciona una lista detallada de mitigaciones por sub-técnica,hecho,INCORRECTA,,ref,,,,respuesta truncada (TRUNC)
+p01,llm,2,Limitar PowerShell a modos Restricted/RemoteSigned,hecho,FUERA_REF,,ref,,,,
+p01,llm,3,Requerir scripts firmados,hecho,CORRECTA,H2,ref,,,,
+p01,llm,4,"Monitoreo, auditoría y detección de anomalías",hecho,FUERA_REF,,ref,,,,
+p01,llm,5,Políticas de grupo para limitar el acceso a PowerShell,hecho,CORRECTA,H3,ref,,,,cobertura laxa de H3
+p01,llm,6,"Usar alternativas (cmd, batch) en entornos críticos",hecho,FUERA_REF,,ref,,,,
+p06,rag,1,Los contextos no dicen qué sub-técnicas T1059.* usa Lazarus,abstencion,INCORRECTA,H1;H2;H3,ref,,,,H1 llegó en r5
+p06,rag,2,Lazarus usa T1059.003 y T1059.005 (vía AuditCred y TYPEFRAME),hecho,CORRECTA,H2;H3,ref,SOSTENIDA,1;3,1;3,
+p06,rag,3,No hay referencia a ataques contra Ecuador,abstencion,CORRECTA,,no_resp,,,,
+p06,llm,1,ATT&CK no documenta que Lazarus use sub-técnicas T1059.*,hecho,INCORRECTA,,ref,,,,
+p06,llm,2,No hay evidencia de ataques de Lazarus contra Ecuador,hecho,CORRECTA,,no_resp,,,,
