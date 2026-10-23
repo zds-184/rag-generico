@@ -188,5 +188,3 @@ respondible y además omite H1–H3, que llegaron).
 | p01 | 0 / N/A | 1 | Recuperación fallida (E1); truncamiento y regla de ALT-P |
 | p06 | 1 / 2 | 0 | Abstención con evidencia recuperada (E2); la nota del piloto cambia con la regla "sin topes" |
 
-**Antes de presentar:** (1) confirmar las calificaciones manuales de estos 8 casos; (2) decidir las reglas marcadas en
-"Para discutir" (ALT-P, afirmación laxa, negación de hechos que llegaron).
