@@ -1,6 +1,6 @@
 # Ejemplos calificados por afirmación — borrador para la reunión
 
-**Estado: revisado contra la calificación manual (2026-10-22).** Las calificaciones de referencia son las de
+**Estado: alineado con la rúbrica congelada v2.3 (2026-10-30).** Las calificaciones de referencia son las de
 `v2/calificacion_v2.xlsx`. Se corrigieron las afirmaciones de p06 y p09 en que el borrador (hecho por Claude) difería de esa
 calificación. El evaluador 2 (`v2/calificacion_v2_eval_independent.xlsx`) discrepa en algunos de estos casos; se indica en
 "Para discutir". Corrida `20260922_064359` (sin modificar). Modos: RAG y LLM.
@@ -125,14 +125,14 @@ evaluador acepta el texto genérico del padre como evidencia.
 | 2 | Limitar PowerShell a modos "Restricted"/"RemoteSigned" | h | F | — | — |
 | 3 | Requerir scripts firmados (ExecutionPolicy) | h | C | H2 | — |
 | 4 | Monitoreo, auditoría y detección (Event ID 4688, SIEM) | h | F | — | — |
-| 5 | Políticas de grupo para limitar el acceso a PowerShell a usuarios autorizados | h | C ⚠ | H3 | — |
+| 5 | Políticas de grupo para limitar el acceso a PowerShell a usuarios autorizados | h | F (no enuncia H3; regla D2) | — | — |
 | 6 | Usar alternativas (cmd, batch) en entornos críticos | h | F | — | — |
 | — | OMISION H1, H4, H5 · TRUNC | | | | OMI |
 
-**Derivado:** C = 2 de 5, con INC → **N2 = 1**. **Diagnóstico:** E2 (+ indicador TRUNC).
+**Derivado:** C = 1 de 5 (H2), con INC → **N2 = 1**. **Diagnóstico:** E2 (+ indicador TRUNC).
 
 **Para discutir:**
-- ⚠ Afirmación 5 contada como H3: cubre la restricción de acceso de forma laxa. ¿Cuenta como CORRECTA o como FUERA_REF?
+- Afirmación 5: cubría H3 de forma indirecta; con la regla D2 congelada (CORRECTA solo si enuncia el hecho) queda FUERA_REF. El evaluador 2 la había marcado CORRECTA; la regla resuelve el desacuerdo.
 - ALT-P en H5: ¿E1 o E1 + E2? Es la decisión de regla que más cambia el diagnóstico de este caso.
 
 ---
