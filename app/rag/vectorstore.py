@@ -110,17 +110,19 @@ class VectorStore:
     ) -> list[dict]:
         qfilter = self._build_filter(filters)
         sparse = models.SparseVector(indices=sparse_vector[0], values=sparse_vector[1]) if sparse_vector else None
+        # Se piden más candidatos que top_k y se ordenan aquí: Qdrant no garantiza el orden entre puntos
+        # con el mismo score (en RRF los empates son frecuentes), y el top-k cambiaba entre llamadas.
+        n = top_k * candidates_factor
 
         if mode == "dense":
             res = self.client.query_points(
-                self.collection, query=dense_vector, using=DENSE, limit=top_k, query_filter=qfilter, with_payload=True
+                self.collection, query=dense_vector, using=DENSE, limit=n, query_filter=qfilter, with_payload=True
             )
         elif mode == "sparse":
             res = self.client.query_points(
-                self.collection, query=sparse, using=SPARSE, limit=top_k, query_filter=qfilter, with_payload=True
+                self.collection, query=sparse, using=SPARSE, limit=n, query_filter=qfilter, with_payload=True
             )
         else:  # hybrid: RRF sobre los candidatos de ambas búsquedas
-            n = top_k * candidates_factor
             res = self.client.query_points(
                 self.collection,
                 prefetch=[
@@ -128,7 +130,13 @@ class VectorStore:
                     models.Prefetch(query=sparse, using=SPARSE, limit=n, filter=qfilter),
                 ],
                 query=models.FusionQuery(fusion=models.Fusion.RRF),
-                limit=top_k,
+                limit=n,
                 with_payload=True,
             )
-        return [{"id": str(p.id), "score": float(p.score), "payload": p.payload or {}} for p in res.points]
+        hits = [{"id": str(p.id), "score": float(p.score), "payload": p.payload or {}} for p in res.points]
+        return rank_hits(hits, top_k)
+
+
+def rank_hits(hits: list[dict], top_k: int) -> list[dict]:
+    """Orden determinista: score descendente y, en empate, point_id ascendente."""
+    return sorted(hits, key=lambda h: (-round(h["score"], 9), h["id"]))[:top_k]

@@ -18,14 +18,28 @@ def _tail(text: str, overlap: int) -> str:
 
 
 def _hard_split(text: str, chunk_size: int, overlap: int) -> list[str]:
-    """Divide un párrafo demasiado largo por oraciones; si una oración excede, por caracteres."""
+    """Divide un párrafo demasiado largo por oraciones; si una oración excede, por caracteres.
+
+    Los trozos por caracteres NO se solapan entre sí: el solape lo añade `split_text` una sola vez
+    (antes se añadía aquí y otra vez allí, y el texto de solape quedaba duplicado en los documentos
+    largos). Se reserva sitio para ese solape y el separador para que el chunk no exceda `chunk_size`.
+    """
     pieces: list[str] = []
+    piece_size = max(1, chunk_size - overlap - 2)
     for sentence in _SENTENCE_RE.split(text):
-        if len(sentence) <= chunk_size:
+        if len(sentence) <= piece_size:
             pieces.append(sentence)
-        else:
-            step = max(1, chunk_size - overlap)
-            pieces.extend(sentence[i : i + chunk_size] for i in range(0, len(sentence), step))
+            continue
+        start = 0
+        while start < len(sentence):
+            end = min(start + piece_size, len(sentence))
+            if end < len(sentence):
+                # Cortar en un espacio para no partir palabras (el separador "\n\n" reemplaza a ese espacio)
+                cut = sentence.rfind(" ", start + piece_size // 2, end)
+                if cut != -1:
+                    end = cut
+            pieces.append(sentence[start:end].strip())
+            start = end
     return pieces
 
 
@@ -55,7 +69,8 @@ def split_text(text: str, chunk_size: int = 1200, chunk_overlap: int = 150) -> l
             current = f"{current}\n\n{piece}"
         else:
             chunks.append(current)
-            tail = _tail(current, chunk_overlap)
+            # El solape se recorta si hace falta para que tail + separador + piece quepa en chunk_size
+            tail = _tail(current, min(chunk_overlap, chunk_size - 2 - len(piece)))
             current = f"{tail}\n\n{piece}" if tail else piece
     if current:
         chunks.append(current)

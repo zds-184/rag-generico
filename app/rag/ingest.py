@@ -127,6 +127,11 @@ def main() -> None:
         "points_count": store.count(),
         "elapsed_s": round(time.perf_counter() - t0, 1),
     }
+    if manifest["points_count"] != len(records):
+        # Sin manifest no se considera completa (health.ingest_complete = false); eval/pilot/check_ingest.py lo verifica
+        raise RuntimeError(
+            f"ingesta incompleta: {manifest['points_count']} puntos en Qdrant frente a {len(records)} chunks esperados"
+        )
     (data_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
     log(f"listo: {manifest['points_count']} puntos en '{settings.collection}' en {manifest['elapsed_s']} s")
 

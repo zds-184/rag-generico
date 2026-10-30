@@ -23,6 +23,9 @@ from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.worksheet.datavalidation import DataValidation
 
 HERE = Path(__file__).parent
+sys.path.insert(0, str(HERE))
+import check_ingest  # noqa: E402  (comprobación de ingesta y snapshot del corpus)
+
 ANSWERABILITY_ES = {"complete": "completa", "partial": "parcial", "none": "nula"}
 DIAGNOSES = ["OK", "E0-corpus", "E1-recuperacion", "E2-generacion", "E3-citas"]
 
@@ -61,6 +64,75 @@ def auto_retrieval_eval(q: dict, contexts: list[dict]) -> dict:
     }
 
 
+# Claves de config.json que definen la configuración de una corrida: si cambian, --resume se niega a mezclar
+FINGERPRINT_KEYS = ("model", "embed_model", "retrieval", "top_k", "temperature", "think", "modes",
+                    "num_ctx", "num_predict", "corpus")
+
+
+def build_config(args: argparse.Namespace, health: dict, corpus: dict) -> dict:
+    defaults = health["defaults"]
+    manifest = corpus.get("manifest") or {}
+    return {
+        "api": args.api,
+        "model": args.model or defaults["llm_model"],
+        "embed_model": defaults["embed_model"],
+        "retrieval": args.retrieval,
+        "top_k": args.top_k,
+        "temperature": args.temperature,
+        "think": False,
+        "modes": args.modes.split(","),
+        # Límites de generación del servidor (.env); la API los expone en /health desde la corrida reproducible
+        "num_ctx": defaults.get("num_ctx"),
+        "num_predict": defaults.get("num_predict"),
+        "collection_points": health["qdrant"]["collection"].get("points_count"),
+        # Versión exacta del corpus indexado (manifest de la ingesta + hash de chunks.jsonl)
+        "corpus": {
+            "attack_versions": manifest.get("attack_versions"),
+            "ingested_at": manifest.get("created_at"),
+            "n_chunks": manifest.get("n_chunks"),
+            "chunk_size": manifest.get("chunk_size"),
+            "chunk_overlap": manifest.get("chunk_overlap"),
+            "chunks_jsonl_sha256": corpus.get("chunks_jsonl_sha256"),
+        },
+        "started_at": datetime.now().isoformat(timespec="seconds"),
+    }
+
+
+def config_mismatch(saved: dict, current: dict) -> list[str]:
+    """Claves de FINGERPRINT_KEYS cuyo valor difiere entre la corrida guardada y la configuración actual."""
+    return [k for k in FINGERPRINT_KEYS if saved.get(k) != current.get(k)]
+
+
+def snapshot_gold(questions: list[dict], run_dir: Path) -> int:
+    """Guarda en la corrida las preguntas con su referencia y el texto exacto de los fragmentos gold."""
+    chunks_path = HERE.parent.parent / "data" / "chunks.jsonl"
+    wanted = {pid for q in questions for pid in (q.get("gold_point_ids") or [])}
+    texts: dict[str, dict] = {}
+    if chunks_path.exists() and wanted:
+        with chunks_path.open(encoding="utf-8") as fh:
+            for line in fh:
+                if not line.strip():
+                    continue
+                rec = json.loads(line)
+                if rec["id"] in wanted:
+                    texts[rec["id"]] = {"attack_id": rec.get("attack_id"), "name": rec.get("name"),
+                                        "chunk": f"{rec.get('chunk_index', 0) + 1}/{rec.get('n_chunks', 1)}",
+                                        "text": rec.get("text", "")}
+    with (run_dir / "questions_snapshot.jsonl").open("w", encoding="utf-8") as fh:
+        for q in questions:
+            fh.write(json.dumps(q, ensure_ascii=False) + "\n")
+    with (run_dir / "gold_chunks.jsonl").open("w", encoding="utf-8") as fh:
+        for q in questions:
+            for pid in q.get("gold_point_ids") or []:
+                fh.write(json.dumps({"qid": q["id"], "point_id": pid, **texts.get(pid, {"text": None})},
+                                    ensure_ascii=False) + "\n")
+    missing = wanted - set(texts)
+    if missing:
+        log(f"AVISO: {len(missing)} gold_point_ids no están en data/chunks.jsonl (¿corpus distinto?): "
+            + ", ".join(sorted(missing))[:200])
+    return len(missing)
+
+
 def run(args: argparse.Namespace) -> Path:
     questions = load_questions(Path(args.questions))
     run_dir = Path(args.resume) if args.resume else HERE / "results" / f"{datetime.now():%Y%m%d_%H%M%S}"
@@ -69,19 +141,22 @@ def run(args: argparse.Namespace) -> Path:
     done = load_done(traces_path)
 
     health = requests.get(f"{args.api}/health", timeout=30).json()
-    config = {
-        "api": args.api,
-        "model": args.model or health["defaults"]["llm_model"],
-        "embed_model": health["defaults"]["embed_model"],
-        "retrieval": args.retrieval,
-        "top_k": args.top_k,
-        "temperature": args.temperature,
-        "think": False,
-        "modes": args.modes.split(","),
-        "collection_points": health["qdrant"]["collection"].get("points_count"),
-        "started_at": datetime.now().isoformat(timespec="seconds"),
-    }
-    (run_dir / "config.json").write_text(json.dumps(config, indent=2, ensure_ascii=False), encoding="utf-8")
+    problems = check_ingest.check(args.api)
+    if problems and not args.force:
+        sys.exit("Ingesta incompleta o inconsistente (usa --force para ignorarlo):\n  - " + "\n  - ".join(problems))
+    config = build_config(args, health, check_ingest.corpus_snapshot())
+    config_path = run_dir / "config.json"
+    if args.resume and config_path.exists():
+        saved = json.loads(config_path.read_text(encoding="utf-8"))
+        diff = config_mismatch(saved, config)
+        if diff:
+            sys.exit(f"--resume rechazado: la configuración actual difiere de {config_path} en "
+                     f"{', '.join(diff)}. Lanza una corrida nueva en vez de mezclar configuraciones.")
+        config["started_at"] = saved.get("started_at", config["started_at"])
+        config["resumed_at"] = datetime.now().isoformat(timespec="seconds")
+    config_path.write_text(json.dumps(config, indent=2, ensure_ascii=False), encoding="utf-8")
+    if not args.resume:
+        snapshot_gold(questions, run_dir)
     log(f"Corrida: {run_dir}  ({len(done)} respuestas ya guardadas)")
     log(f"Config: {config['model']} | {config['retrieval']} | top_k={config['top_k']} | T={config['temperature']}")
 
@@ -118,9 +193,19 @@ def run(args: argparse.Namespace) -> Path:
                 status = "ERROR " + res["error"][:60] if res.get("error") else f"{len(res.get('answer', ''))} chars"
                 log(f"[{n:2}/{total}] {q['id']} {mode:>3} {secs:6.1f}s  {status}")
 
-    build_workbook(questions, done, config, load_manifest(), run_dir / "calificacion.xlsx")
+    write_workbook_protected(questions, done, config, run_dir / "calificacion.xlsx", args.force)
     write_summary(questions, done, config, run_dir / "summary.json")
     return run_dir
+
+
+def write_workbook_protected(questions: list[dict], done: dict, config: dict, out: Path, force: bool) -> bool:
+    """Genera calificacion.xlsx sólo si no existe: un libro existente puede contener calificaciones manuales."""
+    if out.exists() and not force:
+        log(f"{out} ya existe: NO se sobrescribe (protege las calificaciones manuales). "
+            f"Usa --force si de verdad quieres regenerarlo.")
+        return False
+    build_workbook(questions, done, config, load_manifest(), out)
+    return True
 
 
 def load_manifest() -> dict:
@@ -158,11 +243,12 @@ def check_ties(run_dir: Path, api: str) -> None:
     log(f"{sum(1 for x in report if x['tie_at_boundary'])}/{len(report)} preguntas con empate en la frontera -> {run_dir / 'ties.json'}")
 
 
-def rebuild_xlsx(run_dir: Path, questions_path: Path) -> None:
+def rebuild_xlsx(run_dir: Path, questions_path: Path, force: bool = False) -> None:
     questions = load_questions(questions_path)
     done = load_done(run_dir / "traces.jsonl")
     config = json.loads((run_dir / "config.json").read_text(encoding="utf-8"))
-    build_workbook(questions, done, config, load_manifest(), run_dir / "calificacion.xlsx")
+    if not write_workbook_protected(questions, done, config, run_dir / "calificacion.xlsx", force):
+        sys.exit(1)
     write_summary(questions, done, config, run_dir / "summary.json")
 
 
@@ -408,12 +494,14 @@ def main() -> None:
     ap.add_argument("--resume", default=None, help="carpeta de una corrida anterior para continuarla")
     ap.add_argument("--rebuild-xlsx", default=None, help="regenera calificacion.xlsx de una corrida sin volver a consultar")
     ap.add_argument("--check-ties", default=None, help="verifica empates de score en la frontera del top-k de una corrida")
+    ap.add_argument("--force", action="store_true",
+                    help="permite sobrescribir calificacion.xlsx y correr con ingesta inconsistente (no recomendado)")
     args = ap.parse_args()
     if args.check_ties:
         check_ties(Path(args.check_ties), args.api)
         return
     if args.rebuild_xlsx:
-        rebuild_xlsx(Path(args.rebuild_xlsx), Path(args.questions))
+        rebuild_xlsx(Path(args.rebuild_xlsx), Path(args.questions), args.force)
         return
     run_dir = run(args)
     log(f"Listo. Resultados en {run_dir}")

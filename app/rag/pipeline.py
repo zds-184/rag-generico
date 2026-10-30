@@ -155,5 +155,8 @@ class RAGPipeline:
                 "retrieval": self.settings.retrieval_mode,
                 "temperature": self.settings.temperature,
                 "think": self.settings.llm_think,
+                # Límites de generación: el evaluador los guarda en cada corrida para reproducirla
+                "num_ctx": self.settings.num_ctx,
+                "num_predict": self.settings.num_predict,
             },
         }
