@@ -66,7 +66,7 @@ def main() -> int:
             q["corpus"] = {"attack_versions": manifest.get("attack_versions"), "n_chunks": manifest.get("n_chunks"),
                            "created_at": manifest.get("created_at")}
             fh.write(json.dumps(q, ensure_ascii=False) + "\n")
-    print(f"\nescrito {args.out} ({len(questions)} preguntas); status sigue 'draft' hasta que se validen las referencias")
+    print(f"\nescrito {args.out} ({len(questions)} preguntas)")
     return 0
 
 
