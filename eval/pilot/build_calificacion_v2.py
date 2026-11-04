@@ -52,23 +52,54 @@ def col(names):
     return {n: get_column_letter(i) for i, n in enumerate(names, 1)}
 
 
-def main(run, demo):
+def main(run, demo, questions_path=None, out_path=None, evidence_path=None, rubrica=None, core_first=False):
     run = Path(run)
-    name = "calificacion_v2_DEMO.xlsx" if demo else "calificacion_v2_piloto.xlsx"
     OUT_DIR.mkdir(exist_ok=True)
-    out = OUT_DIR / name
+    out = Path(out_path) if out_path else OUT_DIR / ("calificacion_v2_DEMO.xlsx" if demo else "calificacion_v2_piloto.xlsx")
     if out.exists():
         sys.exit(f"{out} ya existe: no se sobrescribe (protege las calificaciones). Renómbralo o muévelo si quieres regenerar.")
+    rubrica = rubrica or "protocolo v2 (borrador) - eval/pilot/protocol_v2.md"
 
     questions = {}
-    for line in (HERE / "questions.jsonl").read_text(encoding="utf8").splitlines():
-        q = json.loads(line)
-        questions[q["id"]] = q
+    for line in Path(questions_path or HERE / "questions.jsonl").read_text(encoding="utf8").splitlines():
+        if line.strip():
+            q = json.loads(line)
+            questions[q["id"]] = q
     traces = [json.loads(line) for line in (run / "traces.jsonl").read_text(encoding="utf8").splitlines()]
     cfg = json.loads((run / "config.json").read_text(encoding="utf8"))
-    ev = json.loads((HERE / "evidence_pilot.json").read_text(encoding="utf8"))
-    manifest = json.loads((ROOT / "data" / "manifest.json").read_text(encoding="utf8"))
+    if evidence_path:
+        ev = json.loads(Path(evidence_path).read_text(encoding="utf8"))
+    elif any("facts" in q for q in questions.values()):
+        # corrida 2: hechos H# en questions.jsonl; evidencia = chunks gold de la pregunta (gold_chunks.jsonl de la corrida)
+        gold_text = {}
+        gc = run / "gold_chunks.jsonl"
+        if gc.exists():
+            for line in gc.read_text(encoding="utf8").splitlines():
+                g = json.loads(line)
+                gold_text[g["point_id"]] = g
+        ev = {}
+        for qid, q in questions.items():
+            ev[qid] = [{"fact": h, "text": t,
+                        "evidence": [dict(gold_text.get(pid, {}), point_id=pid) for pid in q.get("gold_point_ids") or []]}
+                       for h, t in (q.get("facts") or {}).items()]
+    else:
+        ev = json.loads((HERE / "evidence_pilot.json").read_text(encoding="utf8"))
+    manifest = cfg.get("corpus") or json.loads((ROOT / "data" / "manifest.json").read_text(encoding="utf8"))
     n1 = json.loads((run / "n1_v2.json").read_text(encoding="utf8")) if (run / "n1_v2.json").exists() else {}
+    # chunks gold que llegaron en RAG, por pregunta (informativo para la columna 'llegó')
+    gold_arrived = {}
+    for t in traces:
+        if t["mode"] == "rag":
+            gold = set(t["eval"].get("gold_point_ids") or [])
+            gold_arrived[t["eval"]["id"]] = ", ".join(
+                f"{(c.get('metadata') or {}).get('attack_id')}#{(c.get('metadata') or {}).get('chunk_index', 0) + 1} (r{c['rank']})"
+                for c in t["contexts"] if c["point_id"] in gold) or "ninguno"
+
+    def qorder():
+        ids = sorted(questions)
+        if core_first:
+            ids = sorted(ids, key=lambda i: (questions[i].get("priority", "core") != "core", i))
+        return ids
 
     wb = Workbook()
     wsG = wb.active
@@ -119,12 +150,12 @@ def main(run, demo):
 
     # ------------------------------------------------------------------ Hechos
     H_names = ["qid", "hecho", "texto del hecho", "evidencia (n frag.)", "llegó (RAG)", "cubierto RAG", "cubierto LLM",
-               "cubierto y citado RAG"]
+               "cubierto y citado RAG", "gold llegados (auto)"]
     Hc = col(H_names)
-    head(wsH, H_names, [7, 7, 62, 12, 12, 12, 12, 14])
+    head(wsH, H_names, [7, 7, 62, 12, 12, 12, 12, 14, 30])
     rngH = lambda k: f"Hechos!${Hc[k]}$2:${Hc[k]}${NHEC + 1}"
     hrow = 2
-    for qid in sorted(ev):
+    for qid in [i for i in qorder() if i in ev]:
         arrived = {h["fact"]: h["llego"] for h in n1.get(qid, {}).get("hechos", [])}
         for f in ev[qid]:
             wsH.cell(hrow, 1, qid)
@@ -132,6 +163,7 @@ def main(run, demo):
             wsH.cell(hrow, 3, f["text"])
             wsH.cell(hrow, 4, len(f["evidence"]))
             wsH.cell(hrow, 5, arrived.get(f["fact"], ""))
+            wsH.cell(hrow, 9, gold_arrived.get(qid, ""))
             fr = lambda k, hr=hrow: f"${Hc[k]}{hr}"
             hr_ = f'SUBSTITUTE({rngA("hecho_ref")}," ","")'
             base = (f'({rngA("qid")}={fr("qid")})*({rngA("vs_ref")}="CORRECTA")*({rngA("zona")}<>"no_resp")'
@@ -167,7 +199,7 @@ def main(run, demo):
     head(wsR, R_names, [6, 6, 6, 9, 38, 38, 26, 60, 8, 10, 11, 7, 7, 8, 9, 6, 6, 7, 8, 6, 7, 6, 8, 9, 5, 5, 22, 18, 10, 9, 9, 6, 6, 36])
     rngR = lambda k: f"Respuestas!${Rc[k]}$2:${Rc[k]}$200"
     order = []
-    for qid in sorted(questions):
+    for qid in qorder():
         for mode in ("rag", "llm"):
             t = next((t for t in traces if t["eval"]["id"] == qid and t["mode"] == mode), None)
             if t:
@@ -177,7 +209,7 @@ def main(run, demo):
     for qid, mode, t in order:
         q = questions[qid]
         trunc = "SI" if t["usage"]["completion_tokens"] >= t.get("params", {}).get("num_predict", 1024) else "NO"
-        vals = {"qid": qid, "modo": mode, "idioma": q["lang"].upper(),
+        vals = {"qid": qid, "modo": mode, "idioma": q["lang"].upper() + (f" · {q['priority']}" if q.get("priority") else ""),
                 "N0 corpus": {"complete": "completa", "partial": "parcial", "none": "nula"}.get(q["answerability"], q["answerability"]),
                 "pregunta": q["question"], "respuesta de referencia": q["reference"],
                 "parte NO respondible": q["unanswerable_part"] or "", "RESPUESTA DEL SISTEMA": t["answer"],
@@ -301,7 +333,7 @@ def main(run, demo):
     wsK.column_dimensions["A"].width = 34
     wsK.column_dimensions["B"].width = 80
     info = [
-        ("rúbrica", "protocolo v2 (borrador) - eval/pilot/protocol_v2.md"),
+        ("rúbrica", rubrica),
         ("plantilla creada", datetime.now().isoformat(timespec="seconds")),
         ("corrida de origen", str(run.name)),
         ("evaluador", ""),
@@ -377,5 +409,14 @@ def main(run, demo):
 
 
 if __name__ == "__main__":
-    args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    main(args[0], "--demo" in sys.argv)
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("run")
+    ap.add_argument("--demo", action="store_true")
+    ap.add_argument("--questions", default=None, help="questions.jsonl de la corrida (por defecto el del piloto)")
+    ap.add_argument("--out", default=None, help="libro de salida (por defecto eval/pilot/v2/calificacion_v2_piloto.xlsx)")
+    ap.add_argument("--evidence", default=None, help="evidence_*.json (por defecto: facts de questions.jsonl o evidence_pilot.json)")
+    ap.add_argument("--rubrica", default=None, help="texto de la fila 'rúbrica' en Config")
+    ap.add_argument("--core-first", action="store_true", help="ordena las preguntas 'core' antes que las 'ext'")
+    a = ap.parse_args()
+    main(a.run, a.demo, a.questions, a.out, a.evidence, a.rubrica, a.core_first)

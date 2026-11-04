@@ -1,0 +1,27 @@
+{
+  "api": "http://localhost:8000",
+  "model": "qwen3:4b-instruct",
+  "embed_model": "granite-embedding:30m",
+  "retrieval": "hybrid",
+  "top_k": 5,
+  "temperature": 0.0,
+  "think": false,
+  "modes": [
+    "rag",
+    "llm"
+  ],
+  "num_ctx": 4096,
+  "num_predict": 1024,
+  "collection_points": 7244,
+  "corpus": {
+    "attack_versions": {
+      "enterprise-attack": "19.2"
+    },
+    "ingested_at": "2026-11-04T12:03:19.704710+00:00",
+    "n_chunks": 7244,
+    "chunk_size": 1200,
+    "chunk_overlap": 150,
+    "chunks_jsonl_sha256": "bcd2ed8ededefdf48c46c91d7e94c75035d354cb81cf6eaa8f22a05174912d4c"
+  },
+  "started_at": "2026-11-04T07:29:01"
+}
