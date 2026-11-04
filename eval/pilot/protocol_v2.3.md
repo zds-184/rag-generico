@@ -336,6 +336,8 @@ verificaron con un recálculo independiente en Python sobre las 26 respuestas (2
 
 - **Generación no determinista con `temperature=0` (2026-11-04).** Dos corridas del mismo conjunto, mismo corpus y misma configuración (`results/20261104_072901` y `20261104_084930`) recuperaron contextos idénticos en 18/18 preguntas pero generaron respuestas distintas en 19/36 (Ollama en CPU). La traza de cada corrida es, por tanto, el único registro de lo que se calificó; la rúbrica se aplica a la traza, no a una "respuesta reproducible". Ver `results/20261104_072901/REPLICA.md`.
 
+- **Extracción de afirmaciones asistida en la corrida 2 (2026-11-05).** Las 143 afirmaciones de las 36 respuestas de `results/20261104_084930` las extrajo un asistente (Claude Fable 5.1) sin emitir juicio alguno (`eval/run2/afirmaciones_extraidas.json`); el evaluador principal las revisa y corrige antes de calificar `tipo`, `vs_ref`, `hecho_ref`, `zona` y `respaldo`. Es el mismo límite declarado para el evaluador 2 en el piloto (§7.3): la unidad de calificación no la fija el propio evaluador. En el piloto la extracción fue del evaluador principal.
+
 ## 7. Validación y posicionamiento
 
 ### 7.1 Matriz comparativa (v4)
