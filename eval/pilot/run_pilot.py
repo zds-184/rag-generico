@@ -221,11 +221,15 @@ def check_ties(run_dir: Path, api: str) -> None:
     for res in load_done(run_dir / "traces.jsonl").values():
         if res["mode"] != "rag" or res.get("error"):
             continue
+        # Misma k que la corrida para comparar con la traza: en modo híbrido el conjunto de candidatos que entra en la
+        # fusión RRF depende de k (prefetch = k x 4), así que el top-k con k+1 no es necesariamente un prefijo.
+        same = requests.post(f"{api}/retrieve", json={"question": res["question"], "top_k": k,
+                                                       "retrieval": config["retrieval"]}, timeout=300).json()["contexts"]
         r = requests.post(f"{api}/retrieve", json={"question": res["question"], "top_k": k + 1,
                                                     "retrieval": config["retrieval"]}, timeout=300).json()
         now = r["contexts"]
         trace_ids = [c["point_id"] for c in res["contexts"]]
-        now_ids = [c["point_id"] for c in now[:k]]
+        now_ids = [c["point_id"] for c in same]
         tie = len(now) > k and abs(now[k - 1]["score"] - now[k]["score"]) < 1e-9
         gold = set(res["eval"].get("gold_point_ids") or [])
         report.append({

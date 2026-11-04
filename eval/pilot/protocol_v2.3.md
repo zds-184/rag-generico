@@ -334,6 +334,8 @@ verificaron con un recálculo independiente en Python sobre las 26 respuestas (2
   ordenan de forma arbitraria (p01, p04, p12 en el piloto; ningún gold en la frontera, así que los veredictos N1 del piloto son
   estables). La traza es el único registro válido de lo que recibió el LLM. **Se corrige antes de la corrida nueva (D6, §8).**
 
+- **Generación no determinista con `temperature=0` (2026-11-04).** Dos corridas del mismo conjunto, mismo corpus y misma configuración (`results/20261104_072901` y `20261104_084930`) recuperaron contextos idénticos en 18/18 preguntas pero generaron respuestas distintas en 19/36 (Ollama en CPU). La traza de cada corrida es, por tanto, el único registro de lo que se calificó; la rúbrica se aplica a la traza, no a una "respuesta reproducible". Ver `results/20261104_072901/REPLICA.md`.
+
 ## 7. Validación y posicionamiento
 
 ### 7.1 Matriz comparativa (v4)
@@ -429,7 +431,7 @@ Requisitos (fijados en v2.2 §8, decisiones D1 y D6) y estado:
 | 3 | Proteger las calificaciones | **hecho**: `run_pilot.py` (corrida y `--rebuild-xlsx`) se niega a sobrescribir `calificacion.xlsx` sin `--force`; verificado contra el piloto |
 | 4 | `--resume` se niega si cambia la configuración | **hecho**: compara model, embed_model, retrieval, top_k, temperature, think, modes, num_ctx, num_predict y hash del corpus; el `config.json` del piloto (sin esos campos) no es reanudable con la versión nueva, por diseño |
 | 5 | Manifest del corpus, textos gold y límites de generación por corrida | **hecho**: `config.json` guarda `num_ctx`, `num_predict` y `corpus` (versiones ATT&CK, fecha de ingesta, n_chunks, chunk_size/overlap, sha256 de `chunks.jsonl`); cada corrida escribe `questions_snapshot.jsonl` y `gold_chunks.jsonl` |
-| 6 | Desempate determinista en la recuperación (D6) | **código hecho**: `vectorstore.rank_hits` ordena por (score, `point_id`) sobre `top_k × 4` candidatos; probado con el empate de p01. **No verificado contra Qdrant en marcha**; confirmar con `--check-ties` en la corrida nueva |
+| 6 | Desempate determinista en la recuperación (D6) | **hecho y verificado en vivo** (2026-11-04, corrida `20261104_084930`): `vectorstore.rank_hits` ordena por (score, `point_id`) sobre `top_k × 4` candidatos; `--check-ties` devuelve el mismo top-5 que la traza en 18/18 preguntas; 5 preguntas (n02, n12, n13, n16, n18) tienen empate de score en la frontera y lo resuelve el `point_id`, ninguna con gold en la frontera. Nota: en modo híbrido el conjunto de candidatos de la fusión RRF depende de `k` (prefetch = 4k), así que el top-5 no es prefijo del top-6; `check_ties` compara con la misma `k` |
 | 7 | Piloto original intacto | se mantiene (verificado con `git status`) |
 
 Pruebas: `eval/pilot/tests/` (3 archivos, 10 pruebas; se ejecutan con `python <archivo>`, no hay pytest). Nada se probó contra
