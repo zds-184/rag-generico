@@ -1,0 +1,182 @@
+{
+  "_nota": "Afirmaciones extraídas de las 36 respuestas de results/20261104_102233 (conjunto 16 es / 2 en) por un asistente (Claude Fable 5.1, 2026-11-05) a partir de traces.jsonl, SIN juicio de tipo/vs_ref/respaldo. El evaluador principal revisa, parte, une o reescribe libremente antes de calificar (protocolo v2.3 §3.2: una afirmación = una relación sujeto-predicado; las abstenciones van aparte). cita_n transcribe las citas [n] que acompañan a la frase en la respuesta.",
+  "afirmaciones": [
+    ["n01", "rag", "El adversario busca robar datos con la táctica Exfiltración (TA0010).", "1"],
+    ["n01", "rag", "Antes de extraerlos puede empaquetar los datos para evitar la detección, con compresión y encriptación.", "1"],
+    ["n01", "rag", "Las formas de sacar los datos incluyen la transferencia por el canal de control C2 (T1041) y por protocolos alternativos (T1048).", ""],
+    ["n01", "rag", "Incluyen la transferencia en bloques fijos o con límites de tamaño de paquete (T1030).", ""],
+    ["n01", "rag", "También lista medios físicos (T1052), canales de red alternativos (T1029), servicios web (T1567), cuentas en la nube (T1537) y transferencia automatizada (T1020).", ""],
+    ["n01", "rag", "Estas técnicas evitan alertas de monitoreo mediante tamaños de paquete uniformes o conexiones periódicas.", "3;5"],
+
+    ["n01", "llm", "El adversario busca obtener datos sensibles o valiosos para espionaje, robo de identidades o ataques posteriores.", ""],
+    ["n01", "llm", "El objetivo de TA0010 es extraer información sensible y transferirla fuera del entorno de la organización.", ""],
+    ["n01", "llm", "Antes de extraer los datos puede censurarlos o modificarlos para ocultar rastros.", ""],
+    ["n01", "llm", "Antes de extraerlos puede cifrarlos o enmascararlos para evitar la detección.", ""],
+    ["n01", "llm", "Antes de extraerlos puede usar canales de comunicación no tradicionales (correo, redes sociales, mensajería).", ""],
+    ["n01", "llm", "Formas típicas: transferencia por conexiones no seguras (HTTP, FTP, servicios web).", ""],
+    ["n01", "llm", "Formas típicas: uso de servicios de red o aplicaciones comunes (correo, mensajería, almacenamiento en la nube).", ""],
+    ["n01", "llm", "Formas típicas: canales de bajo perfil (adjuntos, mensajes de texto, scripts).", ""],
+    ["n01", "llm", "Formas típicas: herramientas maliciosas (C2, scripts, malware) que envían datos de forma automática y frecuente.", ""],
+    ["n01", "llm", "Sub-técnicas de TA0010: T1041.001 (servicios web), T1041.002 (correo), T1041.003 (mensajería), T1041.004 (canales no tradicionales).", ""],
+
+    ["n02", "rag", "Los pasajes no proporcionan información sobre mitigaciones para T1486, por lo que no se puede responder.", ""],
+
+    ["n02", "llm", "La técnica T1486 Data Encrypted for Impact no existe en MITRE ATT&CK.", ""],
+    ["n02", "llm", "T1078 es 'Application Layer Protocol Analysis'.", ""],
+    ["n02", "llm", "'Data Encrypted for Impact' no es una técnica oficial de ATT&CK.", ""],
+    ["n02", "llm", "Técnicas relacionadas: T1566.001 'Data Encrypted for Exfiltration' y T1566.002 'Data Encrypted for Storage'.", ""],
+    ["n02", "llm", "No hay mitigaciones para una técnica que no existe en ATT&CK.", ""],
+
+    ["n03", "rag", "Los pasajes no proporcionan información sobre mitigaciones para T1021.001; no se puede identificar ninguna mitigación.", ""],
+
+    ["n03", "llm", "ATT&CK no proporciona una lista específica de mitigaciones para T1021.001.", ""],
+    ["n03", "llm", "T1021.001 se clasifica como una técnica de acceso remoto por RDP.", ""],
+    ["n03", "llm", "Mitigación recomendada (buenas prácticas): restringir el acceso a RDP por IP o red.", ""],
+    ["n03", "llm", "Mitigación recomendada: autenticación de dos factores para RDP.", ""],
+    ["n03", "llm", "Mitigación recomendada: desactivar RDP en entornos no esenciales.", ""],
+    ["n03", "llm", "Mitigación recomendada: contraseñas fuertes y rotación periódica.", ""],
+    ["n03", "llm", "Mitigación recomendada: aplicar actualizaciones y parches.", ""],
+    ["n03", "llm", "Mitigación recomendada: bloquear el puerto 3389 en cortafuegos.", ""],
+    ["n03", "llm", "Mitigación recomendada: monitoreo y detección de acceso remoto inusual.", ""],
+    ["n03", "llm", "Mitigación recomendada: usar RDP en entornos seguros y con cifrado de sesión.", ""],
+    ["n03", "llm", "ATT&CK no proporciona una lista oficial de mitigaciones para cada técnica como sección independiente. (respuesta truncada)", ""],
+
+    ["n04", "rag", "La campaña C0028 fue un ataque de Sandworm Team (G0034).", "1;4"],
+    ["n04", "rag", "Utilizaron BlackEnergy (BlackEnergy3) y KillDisk.", "1;4"],
+    ["n04", "rag", "Buscaba interrumpir las subestaciones de transmisión y distribución de la red eléctrica de Ucrania.", "1;4"],
+    ["n04", "rag", "Fue la primera gran amenaza pública contra la red eléctrica de Ucrania por parte de Sandworm.", "1"],
+
+    ["n04", "llm", "C0028 fue un ataque cibernético dirigido a interrumpir el suministro eléctrico en regiones de Ucrania.", ""],
+    ["n04", "llm", "Se atribuye al grupo Sandworm (Rusia), aunque no se ha confirmado oficialmente con certeza.", ""],
+    ["n04", "llm", "El ataque fue documentado por CISA y MITRE ATT&CK.", ""],
+    ["n04", "llm", "ATT&CK no identifica un software específico como 'software utilizado' en el ataque.", ""],
+    ["n04", "llm", "Se usaron malware de tipo T1059.001 (Command and Scripting Interpreter) y T1078 ('Remote Access Tools').", ""],
+    ["n04", "llm", "El objetivo fue interrumpir el suministro eléctrico, como en el caso del cable de energía en el centro de Kyiv, para probar la vulnerabilidad de infraestructuras críticas.", ""],
+    ["n04", "llm", "C0028 es un ID de campaña, no de técnica.", ""],
+    ["n04", "llm", "Se han asociado a la campaña las técnicas T1059, T1078 ('Remote Access Tools') y T1047 ('Privilege Escalation').", ""],
+
+    ["n05", "rag", "Empire is an open-source, cross-platform remote administration and post-exploitation framework.", "1"],
+    ["n05", "rag", "The framework itself is primarily written in Python.", "1"],
+    ["n05", "rag", "The post-exploitation agents are written in pure PowerShell for Windows and Python for Linux/macOS.", "1"],
+    ["n05", "rag", "It runs on Linux, macOS and Windows.", "1"],
+
+    ["n05", "llm", "Empire is a post-exploitation framework used to deliver and execute malicious payloads (privilege escalation, lateral movement, persistence).", ""],
+    ["n05", "llm", "According to ATT&CK, Empire is written in C# for its core framework and agent components.", ""],
+    ["n05", "llm", "Empire runs on Windows platforms.", ""],
+
+    ["n06", "rag", "APT41 es un grupo de espionaje estatal chino que también realiza operaciones con motivación financiera.", ""],
+    ["n06", "rag", "Está activo desde al menos 2012.", "3"],
+    ["n06", "rag", "Utiliza la herramienta Empire (S0363).", "2;5"],
+    ["n06", "rag", "Empire es un marco de administración remota y post-explotación ampliamente utilizado por adversarios.", "2;5"],
+    ["n06", "rag", "Empire puede aprovechar WMI debugging para reemplazar binarios como sethc.exe, utilman.exe y magnify.exe con cmd.exe.", "2;5"],
+
+    ["n06", "llm", "APT41 es un grupo de ciberdelincuencia dedicado al robo de datos, acceso a redes y explotación de vulnerabilidades.", ""],
+    ["n06", "llm", "Según ATT&CK, APT41 está activo desde al menos 2017.", ""],
+    ["n06", "llm", "Ha sido asociado con actividades en Asia, especialmente Corea del Sur y China.", ""],
+    ["n06", "llm", "El grupo ha sido vinculado al uso de Empire (S0363) según investigaciones de inteligencia.", ""],
+    ["n06", "llm", "No existe confirmación oficial en MITRE ATT&CK de que APT41 haya utilizado Empire.", ""],
+
+    ["n07", "rag", "T1003.001 pertenece a la táctica credential-access.", "1"],
+    ["n07", "rag", "Los SSP que pueden usarse son los listados en las claves de registro HKLM\\...\\Lsa\\Security Packages y HKLM\\...\\Lsa\\OSConfig\\Security Packages.", "2"],
+    ["n07", "rag", "El texto no especifica los nombres exactos de los SSP; no los enumera.", "2"],
+    ["n07", "rag", "El contexto no menciona ningún producto EDR recomendado por MITRE; no se puede responder esa parte.", ""],
+    ["n07", "rag", "El contexto menciona Mimikatz, PowerSploit, rundll32.exe y procdump como herramientas de ataque o extracción, no productos EDR.", ""],
+
+    ["n07", "llm", "T1003.001 pertenece a la táctica 'T1003: Credential Access'.", ""],
+    ["n07", "llm", "Los SSP que ATT&CK enumera son Microsoft Defender for Identity, Microsoft Defender for Endpoint, CrowdStrike Falcon, SentinelOne, Palo Alto Cortex XDR, Symantec Endpoint Protection y Trend Micro Deep Security.", ""],
+    ["n07", "llm", "ATT&CK no enumera 'proveedores de soporte de seguridad' como productos para acceder a credenciales; no hay lista oficial de SSP.", ""],
+    ["n07", "llm", "MITRE no recomienda específicamente un producto EDR.", ""],
+    ["n07", "llm", "El producto EDR recomendado (por contexto) es Microsoft Defender for Endpoint.", ""],
+
+    ["n08", "rag", "El contexto no informa del porcentaje de robos de cuenta que evita la MFA; esa parte no se puede responder.", ""],
+    ["n08", "rag", "Categoría 'something you know': passwords, PINs.", "1"],
+    ["n08", "rag", "Categoría 'something you have': physical tokens, smartphone authenticator apps.", "1"],
+    ["n08", "rag", "Categoría 'something you are': biometric data (fingerprints, facial recognition, retinal scans).", "1"],
+    ["n08", "rag", "Las soluciones IAM nombradas como ejemplo son Azure Active Directory, Okta y AWS IAM.", "1"],
+
+    ["n08", "llm", "M1032 describe Multi-factor Authentication y no describe 'categorías de factores' como división propia; las tres categorías vienen del modelo de NIST.", ""],
+    ["n08", "llm", "Las tres categorías son algo que se conoce (contraseñas, PIN), algo que se posee (teléfono, token) y algo que se es (huella, rostro, voz).", ""],
+    ["n08", "llm", "Soluciones IAM mencionadas en M1032: Azure AD, Google Workspace, Okta, Ping Identity, Auth0 y AWS IAM.", ""],
+    ["n08", "llm", "No existe un dato oficial de ATT&CK sobre el porcentaje de robos de cuenta evitados por MFA.", ""],
+    ["n08", "llm", "Según estudios independientes (Google, Verizon), la MFA evita aproximadamente el 99,9 % de los robos de cuenta.", ""],
+
+    ["n09", "rag", "Los pasajes no informan de víctimas confirmadas en América Latina; esa parte no se puede responder.", ""],
+    ["n09", "rag", "Operation Dream Job fue atribuida al grupo Lazarus (G0032).", "1;3"],
+    ["n09", "rag", "Atacó sectores de defensa, aeroespacial, gobierno y otros.", "1"],
+    ["n09", "rag", "Atacó Estados Unidos, Israel, Australia, Rusia e India.", "1"],
+
+    ["n09", "llm", "MITRE ATT&CK no atribuye oficialmente Operation Dream Job a un grupo específico.", ""],
+    ["n09", "llm", "No existe una entrada C0022 en ATT&CK como operación atribuida a un grupo.", ""],
+    ["n09", "llm", "No hay información verificada en ATT&CK sobre sectores, países ni víctimas en América Latina de esta operación.", ""],
+
+    ["n10", "rag", "El adversario busca manipular, interrumpir o destruir sistemas y datos, afectando la disponibilidad o la integridad de los procesos empresariales y operativos.", "1"],
+    ["n10", "rag", "Puede incluir destrucción o alteración de datos; los procesos pueden parecer normales pero estar modificados en beneficio del adversario.", ""],
+    ["n10", "rag", "Las técnicas de denegación de servicio de TA0040 son T1498 Network Denial of Service y T1499 Endpoint Denial of Service.", ""],
+    ["n10", "rag", "T1529 System Shutdown/Reboot también es una técnica de denegación de servicio de TA0040.", ""],
+    ["n10", "rag", "APT-C-36 ha usado filtros de geolocalización para redirigir tráfico que no proviene de Ecuador o Colombia a sitios legítimos.", "2;4"],
+    ["n10", "rag", "No hay información en los contextos sobre el uso de estas técnicas en Ecuador en 2025; no se puede determinar cuál fue la más utilizada.", ""],
+
+    ["n10", "llm", "La táctica Impacto (TA0040) no existe en MITRE ATT&CK.", ""],
+    ["n10", "llm", "Los ID de tácticas de ATT&CK comienzan con 'T'.", ""],
+    ["n10", "llm", "Las técnicas de denegación de servicio en ATT&CK son T1591.001, T1591.002 y T1591.003.", ""],
+    ["n10", "llm", "No hay información oficial sobre el uso de técnicas de denegación de servicio en Ecuador en 2025; no se puede afirmar cuál fue la más usada.", ""],
+
+    ["n11", "rag", "Sandworm Team (G0034) está listado como grupo que usa Empire (S0363).", "2"],
+    ["n11", "rag", "Turla (G0010) está listado como grupo que usa Empire (S0363).", "2"],
+    ["n11", "rag", "El contexto no especifica desde qué año cada grupo usa Empire; no se puede determinar.", ""],
+
+    ["n11", "llm", "No hay información oficial en ATT&CK de que Sandworm (G0034) o Turla (G0010) hayan usado Empire (S0363).", ""],
+    ["n11", "llm", "ATT&CK no proporciona una lista de grupos que usan Empire ni el año desde el que la usan.", ""],
+    ["n11", "llm", "El uso de herramientas por grupos lo reportan fuentes de inteligencia (Recorded Future, FireEye, CrowdStrike), no ATT&CK.", ""],
+
+    ["n12", "rag", "Los contextos no informan de las capacidades 'de gusano' que ATT&CK menciona para T1486.", ""],
+    ["n12", "rag", "Los contextos no informan de qué familia de ransomware fue la más usada en 2025.", ""],
+    ["n12", "rag", "No se puede responder a la pregunta con base en los datos proporcionados.", ""],
+
+    ["n12", "llm", "T1486 describe cifrar datos para ejercer un impacto, como en ransomware, para obligar a pagar una extorsión.", ""],
+    ["n12", "llm", "T1486 no se relaciona con 'gusano' porque no es una técnica de propagación.", ""],
+    ["n12", "llm", "No existe en ATT&CK una capacidad de gusano asociada a T1486.", ""],
+    ["n12", "llm", "Los gusanos se describen en la técnica T1566.001 (Worm Propagation).", ""],
+    ["n12", "llm", "ATT&CK no ha publicado datos sobre la familia de ransomware más usada en 2025; los datos de ATT&CK sobre ransomware se actualizan anualmente hasta 2024.", ""],
+    ["n12", "llm", "En 2024 las familias más reportadas fueron LockBit, Alcopop y Cerber.", ""],
+
+    ["n13", "rag", "Los contextos no proporcionan información sobre T1636.003 ni sus mitigaciones; no se puede responder.", ""],
+
+    ["n13", "llm", "T1636.003 describe el acceso o extracción de datos de contactos protegidos del usuario en dispositivos móviles.", ""],
+    ["n13", "llm", "Está clasificada en la táctica de recolección de datos (Data Collection).", ""],
+    ["n13", "llm", "ATT&CK no proporciona una lista de mitigaciones específicas para T1636.003.", ""],
+    ["n13", "llm", "Mitigaciones derivadas: control de acceso, cifrado en reposo, privacidad por defecto, auditoría y monitoreo, actualizaciones, educación del usuario.", ""],
+
+    ["n14", "rag", "The passages contain no information about T0831 Manipulation of Control; the question cannot be answered.", ""],
+
+    ["n14", "llm", "T0831 Manipulation of Control is not part of the MITRE ATT&CK framework (ICS or any other domain).", ""],
+    ["n14", "llm", "T0831 does not belong to any ICS tactic and ATT&CK does not describe it.", ""],
+
+    ["n15", "rag", "Los contextos no proporcionan información sobre T1064; no se puede responder.", ""],
+    ["n15", "rag", "Los contextos mencionan T1059.002, T1220, T1059.010 y T1059.007, pero no T1064.", ""],
+
+    ["n15", "llm", "T1064 describe 'Scripting': el uso de scripts (PowerShell, Python, Bash) para ejecutar tareas de ataque o automatización.", ""],
+    ["n15", "llm", "T1064 pertenece principalmente a la táctica Execution.", ""],
+    ["n15", "llm", "T1064 puede relacionarse también con Persistence, Privilege Escalation y Defense Evasion.", ""],
+
+    ["n16", "rag", "Los contextos no proporcionan información sobre T1021.009; no se puede describir ni dar sus mitigaciones.", ""],
+    ["n16", "rag", "Los contextos incluyen T1021.005 (VNC), pero no T1021.009.", ""],
+
+    ["n16", "llm", "T1021.009 describe 'Command and Scripting Interpreter: PowerShell', el uso de PowerShell para ejecutar comandos o scripts maliciosos.", ""],
+    ["n16", "llm", "Puede incluir Invoke-Expression o Invoke-Command y es común en acceso inicial o persistencia.", ""],
+    ["n16", "llm", "Mitigaciones: restricción de privilegios, políticas de PowerShell, auditoría y registro, firma de scripts, detección de comportamiento anómalo, SIEM/EDR/SOAR.", ""],
+
+    ["n17", "rag", "Los contextos no informan de ataques de ransomware en Ecuador en 2025 ni de un grupo responsable; no se puede determinar.", "1;2;3;5"],
+
+    ["n17", "llm", "No se han registrado ataques de ransomware por parte de ATT&CK en Ecuador durante 2025 ni un grupo responsable.", ""],
+    ["n17", "llm", "ATT&CK no registra ataques por país ni por año ni proporciona estadísticas de ese tipo.", ""],
+    ["n17", "llm", "El año 2025 aún no ha ocurrido, por lo que no puede haber datos reales.", ""],
+
+    ["n18", "rag", "Los contextos no informan de contramedidas de D3FEND asociadas a T1486; no se puede identificar ninguna.", "1;2;3;4;5"],
+
+    ["n18", "llm", "T1486 no tiene asociaciones directas con contramedidas de D3FEND; D3FEND no proporciona una lista oficial de contramedidas para T1486.", ""],
+    ["n18", "llm", "T1486 es una técnica de impacto (no de ataque) cuyo objetivo es proteger la integridad de los datos.", ""],
+    ["n18", "llm", "Contramedidas posibles (no etiquetadas en D3FEND): cifrado de datos en reposo y en tránsito, políticas de acceso y auditoría, monitoreo de actividades de cifrado.", ""],
+    ["n18", "llm", "No hay contramedidas de D3FEND asociadas oficialmente a T1486.", ""]
+  ]
+}
