@@ -25,7 +25,7 @@ Archivos:
    fragmento literal en `gold_evidence` que el script comprobó (18/18 OK el 2026-10-30). Los `point_id` se asignan después.
 6. **Cada pregunta es espejo de una del piloto o de una categoría nueva**, para que la comparación piloto ↔ corrida 2 sea por
    tipo de pregunta y no por pregunta.
-7. **Idioma:** 11 es / 7 en (el piloto: 9 / 4).
+7. **Idioma:** 16 es / 2 en (n05 y n14, ambas de extensión, solo como referencia). El 2026-11-05 se reformularon al español n03, n08, n11, n16 y n18 (mismos hechos y gold) porque el estudio del idioma queda fuera del alcance; la corrida `20261104_084930` (11 es / 7 en) se conserva como réplica.
 
 ## 2. Las 18 preguntas
 
@@ -33,22 +33,22 @@ Archivos:
 |---|---|---|---|---|---|---|---|---|
 | n01 | core | completa | es | TA0010 Exfiltración | single-chunk-conceptual | 4 | — | p03 |
 | n02 | core | completa | es | T1486 mitigaciones | deep-chunk (5/11) | 4 | — | p01 |
-| n03 | ext | completa | en | T1021.001 mitigaciones | deep-chunk, lista cerrada de 8 (3–4/8) | 8 | — | p01 (lista larga) |
+| n03 | ext | completa | es | T1021.001 mitigaciones | deep-chunk, lista cerrada de 8 (3–4/8) | 8 | — | p01 (lista larga) |
 | n04 | core | completa | es | C0028 campaña Ucrania 2015 | single-chunk (campaña) | 4 | — | nuevo (campaña) |
 | n05 | ext | completa | en | S0363 Empire | single-chunk | 4 | — | p04 (software) |
 | n06 | core | completa | es | G0096 APT41 + S0363 | multi-object (dos documentos) | 3 | — | p05 |
 | n07 | core | parcial | es | T1003.001 LSASS | deep-chunk (1 y 3/10) | 2 | producto EDR recomendado | p09 |
-| n08 | core | parcial | en | M1032 MFA | single-chunk | 4 | % de robos de cuenta evitados | p09 **invertida** (los productos SÍ están) |
+| n08 | core | parcial | es | M1032 MFA | single-chunk | 4 | % de robos de cuenta evitados | p09 **invertida** (los productos SÍ están) |
 | n09 | ext | parcial | es | C0022 Operation Dream Job | single-chunk (campaña) | 3 | víctimas en América Latina | p06 |
 | n10 | core | parcial | es | TA0040 Impacto | single-chunk-conceptual | 2 | técnica más usada en Ecuador 2025 | p03 + p08 |
-| n11 | core | parcial | en | S0363 "Used by" (G0034, G0010) | deep-chunk (4/4), multi-object alt. | 2 | año de adopción | p06 |
+| n11 | core | parcial | es | S0363 "Used by" (G0034, G0010) | deep-chunk (4/4), multi-object alt. | 2 | año de adopción | p06 |
 | n12 | ext | parcial | es | T1486 descripción | two-contiguous-chunks (1 y 3/11) | 2 | familia de ransomware más usada | p04 |
 | n13 | core | nula | es | T1636.003 (Mobile) | out-of-ingested-domain | 0 | todo | p10 |
 | n14 | ext | nula | en | T0831 (ICS) | out-of-ingested-domain | 0 | todo | p11 |
 | n15 | core | nula | es | T1064 Scripting (retirada) | **deprecated-object** | 0 | todo | nuevo |
-| n16 | core | nula | en | T1021.009 (inventado) | fabricated-id | 0 | todo | p13 |
+| n16 | core | nula | es | T1021.009 (inventado) | fabricated-id | 0 | todo | p13 |
 | n17 | ext | nula | es | ransomware Ecuador 2025 | out-of-scope-knowledge | 0 | todo | p12 |
-| n18 | core | nula | en | D3FEND ↔ T1486 | **adjacent-mitre-knowledge** | 0 | todo | nuevo |
+| n18 | core | nula | es | D3FEND ↔ T1486 | **adjacent-mitre-knowledge** | 0 | todo | nuevo |
 
 Texto completo, referencias y hechos: `questions_propuesta.jsonl`.
 
