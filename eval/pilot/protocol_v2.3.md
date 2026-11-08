@@ -290,7 +290,79 @@ Donde la recuperación no trajo la evidencia (p01, p08) ambos modos fallan; dond
 correcto y completo. El LLM añade 33 afirmaciones fuera de la referencia (ciertas o no, no se verifican). Sin pruebas de
 significancia: muestra de 13 preguntas, un evaluador principal, una corrida.
 
-### 5.4 Herramientas
+### 5.4 Resultado de la corrida 2 con la rúbrica congelada (36 respuestas, `eval/run2/calificacion_v2_run2.xlsx`, 2026-11-08)
+
+Corrida `results/20261104_102233`: 18 preguntas (6 completas / 6 parciales / 6 nulas; 16 es / 2 en), 42 hechos de referencia,
+misma configuración que el piloto, corpus reingestado con el chunking corregido (§8). Afirmaciones extraídas con asistencia y
+calificadas por el evaluador principal; `llegó` por evidencia leída en `Contextos`. Sin pruebas de significancia.
+
+| Lectura | RAG | LLM |
+|---|---|---|
+| A. Hechos de la referencia cubiertos (÷ 42 respondibles) | 27 (64 %) | 7 (17 %) |
+| A. Afirmaciones `INCORRECTA` ÷ afirmaciones de hecho | 0 / 38 (0 %) | 22 / 82 (27 %) |
+| B. Respuestas con abstención errónea (`ABS-E`) | 4 | 0 |
+| B. Respuestas con respuesta sin base (`NO-ABS`) | 0 | 8 |
+| C. Precisión de citas (sostenidas ÷ afirmaciones de hecho) | 28 / 38 (74 %) | N/A |
+| C. Cobertura de citas (hechos cubiertos y citados ÷ hechos) | 23 / 42 (55 %) | N/A |
+| C. `SIN-RESPALDO` / `CITA-X` / `SIN-CITA` | 0 / 1 / 9 | N/A |
+| D. Afirmaciones `FUERA_REF` | 10 | 52 |
+| N2 promedio (descriptivo) | 1,61 | 0,17 |
+| N3 promedio (descriptivo, excluye N/A) | 1,27 (n = 11) | N/A |
+| Alertas `CRITICA` / `RESPALDO` / `TRUNC` (respuestas) | 4 / 1 / 0 | 18 / 0 / 1 |
+| Diagnóstico (respuestas) | OK 9 · E3 5 · E1 2 · E1+E2 1 · E1+E3 1 | E2 10 · E0 6 · E0+E2 2 |
+
+Por tipo de pregunta (C/H agregado; respuestas con ABS-E; con NO-ABS; N2 medio):
+
+| Tipo | RAG | LLM |
+|---|---|---|
+| Completa (6) | 15/27 (56 %); ABS-E 2; NO-ABS 0; N2 1,33 | 2/27 (7 %); ABS-E 0; NO-ABS 0; N2 0,17 |
+| Parcial (6) | 12/15 (80 %); ABS-E 2; NO-ABS 0; N2 1,50 | 5/15 (33 %); ABS-E 0; NO-ABS 2; N2 0,33 |
+| Nula (6) | NO-ABS 0; N2 2,00 (OK 4, E3 2 por extras sin cita) | NO-ABS 6; N2 0,00 (E0 ×6) |
+
+Por respuesta (C/H, N2, N3, diagnóstico):
+
+| Pregunta | RAG | LLM |
+|---|---|---|
+| n01 completa | 4/4, 2, 1, E3 | 2/4, 1, N/A, E2 |
+| n02 completa | 0/4, 0, N/A, E1 | 0/4, 0, N/A, E2 |
+| n03 completa | 0/8, 0, N/A, E1 | 0/8, 0, N/A, E2 (TRUNC) |
+| n04 completa | 4/4, 2, 2, OK | 0/4, 0, N/A, E2 |
+| n05 completa | 4/4, 2, 2, OK | 0/4, 0, N/A, E2 |
+| n06 completa | 3/3, 2, 1, E3 | 0/3, 0, N/A, E2 |
+| n07 parcial | 1/2, 1, 1, E1 E3 | 1/2, 1, N/A, E0 E2 |
+| n08 parcial | 4/4, 2, 2, OK | 4/4, 1, N/A, E0 E2 |
+| n09 parcial | 3/3, 2, 2, OK | 0/3, 0, N/A, E2 |
+| n10 parcial | 2/2, 2, 1, E3 | 0/2, 0, N/A, E2 |
+| n11 parcial | 2/2, 2, 2, OK | 0/2, 0, N/A, E2 |
+| n12 parcial | 0/2, 0, N/A, E1 E2 | 0/2, 0, N/A, E2 |
+| n13 nula | 0/0, 2, N/A, OK | 0/0, 0, N/A, E0 |
+| n14 nula | 0/0, 2, N/A, OK | 0/0, 0, N/A, E0 |
+| n15 nula | 0/0, 2, 0, E3 | 0/0, 0, N/A, E0 |
+| n16 nula | 0/0, 2, 0, E3 | 0/0, 0, N/A, E0 |
+| n17 nula | 0/0, 2, N/A, OK | 0/0, 0, N/A, E0 |
+| n18 nula | 0/0, 2, N/A, OK | 0/0, 0, N/A, E0 |
+
+**Lectura.** El RAG cubre 27 de 42 hechos frente a 7 del LLM y no produce ninguna afirmación `INCORRECTA` ni ninguna respuesta
+sin base; se abstiene siempre en las seis nulas. Sus fallos están casi todos en la **recuperación** (n02, n03, n07, n12: el chunk
+con el hecho no entró en el top-5 y el modelo se abstuvo → `ABS-E` con `llegó = NO`, diagnóstico E1; en n03 la pregunta en
+español dejó fuera los dos chunks de mitigaciones que sí llegaban con la pregunta en inglés en la réplica `084930`) y en las
+**citas** (9 `SIN-CITA`: listas y frases sin `[n]` aunque el fragmento las sostenga; 1 `CITA-X` en n06, donde cita una lista
+de ejemplos con APT41 y Empire como entradas separadas). El único E2 del RAG es n12 (H1 llegó y la respuesta se abstuvo). El LLM
+falla por **generación**: niega la existencia de objetos reales (T1486, TA0040, C0022, M1032, T0831), inventa IDs
+(T1041.00x, T1591.00x, T1021.009 como PowerShell), confunde idiomas y plataformas (Empire en C#/Windows), y responde sin base en
+las seis nulas y en dos parciales. Las 52 afirmaciones `FUERA_REF` del LLM no se verifican.
+
+**Comparación con el piloto (§5.3), como dos corridas de la misma rúbrica sobre conjuntos distintos:** la cobertura del RAG sube
+de 42 % a 64 % y la del LLM baja de 21 % a 17 %; `INCORRECTA` del RAG pasa de 19 % a 0 % (el conjunto 2 tiene menos preguntas de
+"relación entre objetos" como p05) y la del LLM se mantiene (23 % → 27 %); `NO-ABS` del RAG sigue en 0 y la del LLM pasa de 7
+a 8 respuestas; la precisión de citas se mantiene (71 % → 74 %) y la cobertura de citas sube (39 % → 55 %), con el patrón
+invertido en los códigos (piloto: 4 `CITA-X`, 1 `SIN-CITA`; corrida 2: 1 y 9), que señala el mismo defecto de generación
+(listas sin `[n]`) y no un cambio del sistema. `ABS-E` del RAG se mantiene (3 → 4) y en ambas corridas la mayoría va con
+`llegó = NO` (E1). El caso n08 (inversión de p09: los productos sí estaban en el corpus) salió sin `ABS-E`: el RAG los nombró y
+citó. Los casos límite n15 (técnica retirada) y n18 (D3FEND) se calificaron con la regla de §3.2 (negación verdadera sobre la
+fuente = abstención correcta; negación falsa = hecho `INCORRECTA`) y se discuten con el director (§9).
+
+### 5.5 Herramientas
 
 | Archivo | Función | Modifica el piloto |
 |---|---|---|
@@ -440,7 +512,7 @@ Pruebas: `eval/pilot/tests/` (3 archivos, 10 pruebas; se ejecutan con `python <a
 Qdrant/Ollama/API en marcha. La API monta `./app` con `--reload`, así que los cambios aplican sin rebuild; la ingesta sí requiere
 reingerir.
 
-**Conjunto nuevo de preguntas.** Se propone tras cerrar este documento: equilibrado por cobertura del corpus (completa / parcial /
+**Conjunto nuevo de preguntas (hecho, `eval/run2/`).** 18 preguntas 6/6/6, hechos verificados contra `documents.jsonl`, `gold_point_ids` asignados tras la reingesta (`fill_gold.py`); corrida `results/20261104_102233` calificada (§5.4). Criterio original: equilibrado por cobertura del corpus (completa / parcial /
 nula), con `reference` y hechos `H#` verificados en `chunks.jsonl` **tras la reingesta** (los `point_id` cambian), tamaño
 dimensionado por el tiempo disponible para calificar (la calificación es manual por diseño). Misma configuración que el piloto
 (`top_k=5`, mismo modelo) para que la rúbrica, no el sistema, sea lo que cambia.
