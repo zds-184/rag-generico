@@ -5,7 +5,7 @@
 `matriz_comparativa_evaluacion_RAG_v4.xlsx` (posicionamiento), `eval/pilot/v2/calificacion_v2.xlsx` (piloto) y
 `eval/run2/calificacion_v2_run2.xlsx` (corrida 2).
 
-A contionuación presento cómo propongo cerrar la evaluación del proyecto. Sigo el orden que acordamos el 29 de octubre: rúbrica
+A continuación presento cómo propongo cerrar la evaluación del proyecto. Sigo el orden que acordamos el 29 de octubre: rúbrica
 congelada, corrida reproducible y, ahora, la propuesta final. Marco con **[decisión]** los puntos en los que necesito su criterio.
 
 ## 1. Qué se evalúa y qué se entrega
