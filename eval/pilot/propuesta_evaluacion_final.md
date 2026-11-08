@@ -1,11 +1,11 @@
-# Propuesta de evaluación final — borrador para el director
+# Propuesta de evaluación final 
 
 **Estudiante:** Darwin Simba · **Fecha:** 2026-11-08 · **Estado:** borrador v0.1 para revisión (§9 del protocolo v2.3)
 **Repositorio:** https://github.com/zds-184/rag-generico · **Documentos base:** `eval/pilot/protocol_v2.3.md` (rúbrica congelada),
 `matriz_comparativa_evaluacion_RAG_v4.xlsx` (posicionamiento), `eval/pilot/v2/calificacion_v2.xlsx` (piloto) y
 `eval/run2/calificacion_v2_run2.xlsx` (corrida 2).
 
-Profesor, le presento cómo propongo cerrar la evaluación del proyecto. Sigo el orden que acordamos el 29 de octubre: rúbrica
+A contionuación presento cómo propongo cerrar la evaluación del proyecto. Sigo el orden que acordamos el 29 de octubre: rúbrica
 congelada, corrida reproducible y, ahora, la propuesta final. Marco con **[decisión]** los puntos en los que necesito su criterio.
 
 ## 1. Qué se evalúa y qué se entrega
@@ -69,7 +69,7 @@ ambas es lo que propongo como hallazgo: (a) el RAG no responde sin base y el LLM
 falla, el protocolo localiza si fue la recuperación (E1, la mayoría) o la generación (E2, un caso por corrida); (c) las citas
 fallan por forma (sin [n]) más que por fondo (SIN-RESPALDO 1 y 0).
 
-**[decisión]** ¿Le parece suficiente reportar las dos corridas así, o quiere una tercera con otro conjunto / otro `top_k` para
+**[decisión]** ¿Sería suficiente reportar las dos corridas así, o es necesrio una tercera con otro conjunto / otro `top_k` para
 reforzar la lectura de recuperación? Mi propuesta es no añadir corridas: el objetivo es el protocolo, y cada corrida cuesta unas
 6–8 horas de calificación manual.
 
