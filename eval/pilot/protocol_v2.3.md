@@ -522,8 +522,9 @@ piloto como dos corridas de la misma rúbrica sobre conjuntos distintos (no como
 
 ## 9. Propuesta de evaluación final
 
-Se redacta después de la corrida (§8), con el director. Contenido previsto: alcance (protocolo diagnóstico aplicado a dos corridas),
-RQ1–RQ6 con la evidencia que las responde, limitaciones (§6, §7.3) y trabajo futuro (§10).
+Borrador v0.1 (2026-11-08) en `propuesta_evaluacion_final.md`: alcance y entregables, RQ1–RQ6 con la evidencia de las dos
+corridas, tabla de resultados, posicionamiento (matriz v4), limitaciones, trabajo futuro y plan de cierre, con tres decisiones
+marcadas para el director (tercera corrida o no; regla para negaciones en preguntas nulas; estructura y fechas del documento).
 
 ## 10. Trabajo futuro (fuera del alcance por decisión D8)
 
