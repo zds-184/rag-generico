@@ -1,12 +1,12 @@
 # Propuesta de evaluación final 
 
-**Estudiante:** Darwin Simba · **Fecha:** 2026-11-08 · **Estado:** borrador v0.1 para revisión (§9 del protocolo v2.3)
+**Estudiante:** Darwin Simba · **Fecha:** 2026-11-08 · **Estado:** v0.2, con la respuesta del director del 2026-11-10 incorporada (§9 del protocolo v2.3)
 **Repositorio:** https://github.com/zds-184/rag-generico · **Documentos base:** `eval/pilot/protocol_v2.3.md` (rúbrica congelada),
 `matriz_comparativa_evaluacion_RAG_v4.xlsx` (posicionamiento), `eval/pilot/v2/calificacion_v2.xlsx` (piloto) y
 `eval/run2/calificacion_v2_run2.xlsx` (corrida 2).
 
 A continuación presento cómo propongo cerrar la evaluación del proyecto. Sigo el orden que acordamos el 29 de octubre: rúbrica
-congelada, corrida reproducible y, ahora, la propuesta final. Marco con **[decisión]** los puntos en los que necesito su criterio.
+congelada, corrida reproducible y, ahora, la propuesta final. Las marcas **[decisión]** de la v0.1 quedan resueltas con su respuesta del 2026-11-10 y se indican como **[resuelto]**.
 
 ## 1. Qué se evalúa y qué se entrega
 
@@ -46,7 +46,7 @@ medición y solo se reporta.
 | RQ3 | ¿Cada afirmación es correcta, completa y fiel? | 234 afirmaciones calificadas (92 piloto + 142 corrida 2) | Sí; la regla de enunciación (D2) es la que más decisiones resuelve |
 | RQ4 | ¿Cada afirmación está sostenida por su cita? | precisión de citas 71 % (piloto) y 74 % (corrida 2); cobertura de citas 39 % → 55 %; códigos CITA-X / SIN-CITA | Sí; el defecto dominante cambia de CITA-X (piloto) a SIN-CITA (corrida 2: listas sin [n]), mismo problema de generación |
 | RQ5 | ¿En qué se diferencian con y sin recuperación? | Lecturas A–D en ambas corridas (tabla §3) | El RAG cubre más hechos (42 % y 64 % frente a 21 % y 17 %), nunca responde sin base (NO-ABS 0 frente a 7 y 8) y su coste es la abstención errónea cuando la evidencia no llega (ABS-E 3 y 4, casi siempre con `llegó = NO`) |
-| RQ6 | ¿Es consistente entre evaluadores? | Segundo evaluador independiente en 4 preguntas / 27 afirmaciones: `vs_ref` 22/27 (κ 0,73) en bruto y 26/27 (κ 0,94) tras aplicar las reglas congeladas; `tipo` 26/27 | Sí en lo esencial; 4 de los 7 desacuerdos brutos eran una sola regla (parte no respondible), que D2 cerró. Límite: afirmaciones pre-extraídas, muestra pequeña, un evaluador adicional |
+| RQ6 | ¿Es consistente entre evaluadores? | Segundo evaluador independiente en 4 preguntas / 27 afirmaciones: acuerdo bruto `vs_ref` 22/27 (κ 0,73), `tipo` 26/27 (κ 0,89). Aparte, como adjudicación y no como acuerdo: 26/27 tras aplicar las reglas congeladas a ambas calificaciones | Sí en lo esencial, con el acuerdo bruto como respuesta; 4 de los 5 desacuerdos de `vs_ref` eran una sola regla (parte no respondible), que D2 cerró. Límite: afirmaciones pre-extraídas, muestra pequeña, un evaluador adicional |
 
 ## 3. Resultados que propongo reportar (descriptivos, sin pruebas de significancia)
 
@@ -69,9 +69,15 @@ ambas es lo que propongo como hallazgo: (a) el RAG no responde sin base y el LLM
 falla, el protocolo localiza si fue la recuperación (E1, la mayoría) o la generación (E2, un caso por corrida); (c) las citas
 fallan por forma (sin [n]) más que por fondo (SIN-RESPALDO 1 y 0).
 
-**[decisión]** ¿Sería suficiente reportar las dos corridas así, o es necesrio una tercera con otro conjunto / otro `top_k` para
-reforzar la lectura de recuperación? Mi propuesta es no añadir corridas: el objetivo es el protocolo, y cada corrida cuesta unas
-6–8 horas de calificación manual.
+**[resuelto]** No hay tercera corrida (director, 2026-11-10): dos conjuntos bastan para mostrar el protocolo.
+
+**Revisión asistida de la calificación de la corrida 2.** La calificación manual pasó por una revisión propuesta por el asistente
+(67 cambios en 48 de 142 afirmaciones; todos aceptados por mí, `SI` en la hoja `Revisión`). Entre mi calificación y la final el
+RAG pasa de 57 % a 64 % de hechos cubiertos, de 16 % a 0 % de `INCORRECTA` y de 0 a 4 respuestas con `ABS-E`; el LLM de 26 % a
+27 % de `INCORRECTA` y mantiene 8 `NO-ABS`. Las causas son dos reglas aplicadas de forma uniforme: extras de lista que no
+contradicen la referencia son `FUERA_REF`, y "los contextos no mencionan…" es una abstención, que al negar un hecho que la
+referencia contiene se registra como `ABS-E`. El detalle, tabla completa y límite (el mismo asistente extrajo y revisó) están en
+el protocolo §5.4.1.
 
 ## 4. Posicionamiento frente a la literatura (matriz v4)
 
@@ -97,7 +103,7 @@ recuperador o al generador. Lo que propongo como diferencia, y que la matriz mue
   por él. El segundo evaluador juzgó afirmaciones ya extraídas. La unidad de calificación no la fija el evaluador independiente.
 - **Referencia cerrada al corpus**: una negación verdadera en el mundo pero ajena al corpus (n15 técnica retirada, n18 D3FEND)
   se calificó como abstención correcta si es verdadera y como hecho INCORRECTA si es falsa ("T1486 no existe").
-  **[decisión]** ¿Mantiene esta regla o prefiere que toda afirmación en pregunta nula cuente como NO-ABS, como en el piloto?
+  **[resuelto]** Se mantiene la regla; el capítulo lista los casos donde se aplicó (n15, n18): protocolo §5.4.2.
 - **Corpus**: solo Enterprise v19.2; Mobile e ICS no ingestados (por diseño, para tener preguntas nulas controladas).
 - **Idioma**: 16 es / 2 en en la corrida 2 (solo como referencia); el estudio del idioma queda fuera del alcance.
 
@@ -111,10 +117,10 @@ hechos con segundo evaluador; efecto del idioma con preguntas equivalentes; corp
 
 | Semana | Hito | Necesito de usted |
 |---|---|---|
-| 1 | Cerrar las dos decisiones de §3 y §5 y la estructura del documento final | reunión de 30 min o respuesta por correo |
+| 1 | (hecho 2026-11-10) Decisiones de §3 y §5 cerradas; estructura del documento final | estructura y fechas, pendientes de su parte |
 | 2 | Capítulo de evaluación (este borrador ampliado con tablas y figuras) + capítulo de diseño del protocolo | — |
 | 3 | Capítulos de introducción, estado del arte (matriz v4) y conclusiones; revisión completa | lectura del borrador |
-| 4 | Correcciones y versión para defensa | fecha de defensa **[decisión]** |
+| 4 | Correcciones y versión para defensa | fecha de defensa (pendiente) |
 
 Quedo atento a sus comentarios. Todo el material (código, corridas, calificaciones y protocolo) está en el repositorio en la
 rama `main`.

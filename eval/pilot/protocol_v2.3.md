@@ -4,7 +4,7 @@
 `protocol_v2.2.md` como referencia para la corrida reproducible (§8) y el documento final. `protocol.md` (v1.1), `protocol_v2.md`,
 `protocol_v2.2.md`, `questions.jsonl` y la corrida `20260922_064359` siguen intactos.
 
-**Estado (2026-10-30).** §1–§7 cerrados. §8: código de la corrida reproducible hecho y probado sin servicios; faltan la reingesta,
+**Estado (2026-11-10).** Respuesta del director recibida (D9–D12); sigue el capítulo de evaluación. Estado anterior: §1–§7 cerrados. §8: código de la corrida reproducible hecho y probado sin servicios; faltan la reingesta,
 el conjunto nuevo de preguntas y la corrida. §9 (propuesta de evaluación final) se redacta tras la corrida.
 
 | Versión | Fecha | Qué incorpora |
@@ -31,6 +31,10 @@ Alcance acordado con el director: **evaluar y diagnosticar** las respuestas. El 
 | D6 | Corregir el desempate de la recuperación antes de la corrida | §8 |
 | D7 | La consistencia se mide con el segundo evaluador; el juez LLM es solo contraste | §7.3 |
 | D8 | El módulo de evaluación y auditoría continua queda como trabajo futuro | §10 |
+| D9 (2026-11-10) | No hay tercera corrida: dos conjuntos bastan para mostrar el protocolo | §9 |
+| D10 (2026-11-10) | Se mantiene la regla para negaciones en preguntas nulas; el capítulo lista los casos donde se aplicó (n15, n18) | §3.2, §5.4.2 |
+| D11 (2026-11-10) | La revisión asistida de la calificación se documenta (quién la propuso, qué cambió, cuánto cambió) y cada cambio lleva SI/NO del evaluador | §5.4.1 |
+| D12 (2026-11-10) | RQ6 se responde con el acuerdo bruto (22/27, κ 0,73); el 26/27 tras las reglas es una adjudicación y se reporta aparte | §7.3 |
 
 Observaciones del director sobre el posicionamiento, incorporadas en §1 y §7: RAGChecker ya atribuye recuperador y generador por
 afirmación, así que no se presenta "localizar el origen de los errores" como novedad; la contribución es la cobertura del corpus por
@@ -362,6 +366,68 @@ invertido en los códigos (piloto: 4 `CITA-X`, 1 `SIN-CITA`; corrida 2: 1 y 9), 
 citó. Los casos límite n15 (técnica retirada) y n18 (D3FEND) se calificaron con la regla de §3.2 (negación verdadera sobre la
 fuente = abstención correcta; negación falsa = hecho `INCORRECTA`) y se discuten con el director (§9).
 
+#### 5.4.1 Revisión asistida de la calificación (D11)
+
+**Quién y cuándo.** El evaluador principal calificó a mano las 142 afirmaciones (2026-11-06/07). El asistente (Claude Fable 5.1,
+el mismo que hizo la extracción sin juicio de §6.2) revisó esa calificación contra las reglas de §3.2 y §4.2 y propuso cambios
+en la copia `calificacion_v2_run2_revisada.xlsx`, hoja `Revisión` (una fila por cambio: antes, después, motivo, `¿aceptas?`).
+El evaluador revisó cada fila, las aceptó todas (`SI`) y las aplicó en `calificacion_v2_run2.xlsx` (2026-11-08). La hoja
+`Revisión` también prellenó `llegó` en `Hechos` (42 filas, automático por evidencia; no es un juicio) y `evaluador/fecha` en
+`Config`. Los resultados de §5.4 son los de la calificación final.
+
+**Qué cambió.** 67 cambios en 48 de 142 afirmaciones (94 sin ningún cambio, 66 %): `vs_ref` 26 (16 `CORRECTA→FUERA_REF` por
+la regla de enunciación D2 o por extras de lista; 3 `INCORRECTA→FUERA_REF` por extras que no contradicen; 2 `CORRECTA→INCORRECTA`;
+2 en sentido contrario; 3 sin cambio de valor pero con `hecho_ref`/`zona` corregidos), `hecho_ref` 12 (`CORRECTA` sin `H#`, que
+la fórmula no cuenta como cobertura), `respaldo` 12 (5 `SOSTENIDA→SIN-CITA` por frases sin `[n]`; 5 vaciados en abstenciones,
+que no se califican en citas), `zona` 9 (5 `ref→no_resp`) y `tipo` 8 (6 `hecho→abstencion`: "los contextos no dicen…").
+Acuerdo original–final por columna: `tipo` 134/142 (94 %), `vs_ref` 116/142 (82 %), `hecho_ref` 130/142 (92 %), `zona` 133/142
+(94 %), `respaldo` 26/38 (68 %, solo afirmaciones de hecho en modo RAG).
+
+**Cuánto cambiaron los resultados** (calificación original reconstruida revirtiendo la hoja `Revisión`; `llegó` igual en ambas):
+
+| Lectura | RAG original | RAG final | LLM original | LLM final |
+|---|---|---|---|---|
+| A. Hechos cubiertos (÷ 42) | 24 (57 %) | 27 (64 %) | 0 (0 %)¹ | 7 (17 %) |
+| A. Afirmaciones `INCORRECTA` | 7/43 (16 %) | 0/38 (0 %) | 21/82 (26 %) | 22/82 (27 %) |
+| B. Respuestas con `ABS-E` | 0 | 4 | 1 | 0 |
+| B. Respuestas con `NO-ABS` | 1 | 0 | 8 | 8 |
+| C. Precisión / cobertura de citas | 77 % / 57 % | 74 % / 55 % | — | — |
+| C. `SIN-R` / `CITA-X` / `SIN-C` | 2 / 2 / 6 | 0 / 1 / 9 | — | — |
+| D. Afirmaciones `FUERA_REF` | 1 | 10 | 42 | 52 |
+| N2 promedio | 1,56 | 1,61 | 0,00¹ | 0,17 |
+| Diagnóstico (respuestas) | OK 10 · E3 2 · E1+E3 2 · E2 1 · E2+E3 1 · E0+E1+E3 1 · E1+E2+E3 1 | OK 9 · E3 5 · E1 2 · E1+E3 1 · E1+E2 1 | E2 10 · E0 5 · E0+E2 3 | E2 10 · E0 6 · E0+E2 2 |
+
+¹ En la calificación original 7 afirmaciones `CORRECTA` del LLM no llevaban `hecho_ref`, y la fórmula de cobertura solo cuenta
+`CORRECTA` con `H#`; asignarlos fue parte de la revisión.
+
+Las dos diferencias que el director señaló tienen una causa cada una: `INCORRECTA` del RAG baja de 16 % a 0 % porque 4 de las 7
+eran extras de lista que no contradicen la referencia (→ `FUERA_REF`) y 3 eran abstenciones ("los contextos no mencionan…")
+calificadas como hecho (→ `abstencion`); y `ABS-E` sube de 0 a 4 por esas mismas abstenciones, que niegan hechos que la
+referencia contiene (n02, n03, n07, n12) y que la regla de §3.2 (abstención vs. afirmación de ausencia) obliga a registrar como
+`ABS-E`. En conjunto, la revisión mueve afirmaciones de `INCORRECTA`/`CORRECTA` hacia `FUERA_REF` y de `hecho` hacia
+`abstencion`; no cambia la lectura B del RAG (sigue sin `NO-ABS`) ni la del LLM (8 `NO-ABS` en ambas).
+
+**Límite.** La revisión la propuso el mismo asistente que extrajo las afirmaciones; el evaluador principal decidió cada cambio,
+pero no hubo un tercer evaluador. Se declara en §6.2 y en el capítulo.
+
+#### 5.4.2 Casos de la regla para negaciones en preguntas nulas (D10)
+
+Regla (§3.2): en una pregunta nula, una negación sobre la fuente que es verdadera ("ATT&CK no documenta…", "no hay contramedidas
+D3FEND asociadas") se califica como `abstencion` `CORRECTA`; una negación falsa ("T1486 no existe") es `hecho` `INCORRECTA`.
+Casos donde se aplicó en la corrida 2:
+
+| Pregunta | Modo | Afirmación | Calificación |
+|---|---|---|---|
+| n15 (T1064, técnica retirada) | RAG | "Los contextos no proporcionan información sobre T1064; no se puede responder" | `abstencion` `CORRECTA` |
+| n15 | RAG | "Los contextos mencionan T1059.002, T1220, … pero no T1064" | `hecho` `FUERA_REF` (`SIN-CITA`) |
+| n15 | LLM | "T1064 describe Scripting…", "pertenece a Execution…" (×3) | `hecho` `FUERA_REF` + `NO-ABS` (responde sin base) |
+| n18 (D3FEND) | RAG | "Los contextos no informan de contramedidas de D3FEND asociadas a T1486" | `abstencion` `CORRECTA` |
+| n18 | LLM | "No hay contramedidas de D3FEND asociadas oficialmente a T1486" | `abstencion` `CORRECTA` (negación verdadera) |
+| n18 | LLM | "T1486 no tiene asociaciones directas…; D3FEND no proporciona lista oficial", "T1486 es una técnica de impacto cuyo objetivo es proteger…", "contramedidas posibles: cifrado…" | `hecho` `FUERA_REF` + `NO-ABS` |
+
+Negaciones falsas en modo LLM (`hecho` `INCORRECTA`): "T1486 no existe / no es una técnica de ATT&CK" (n02, n12), "TA0040 no
+existe" (n10), "C0022 no está documentada" (n09), "M1032 no existe" (n08), "T0831 no existe" (n14).
+
 ### 5.5 Herramientas
 
 | Archivo | Función | Modifica el piloto |
@@ -480,9 +546,10 @@ sin `hecho_ref` → regla de enunciación: sí enuncia M1054, y la negación de 
 explica la única diferencia de N2 (1 frente a 0); p05 RAG #2, `SOSTENIDA` frente a `CITA-X` → el fragmento expresa la relación
 textualmente (§4.2).
 
-**Acuerdo tras aplicar las reglas congeladas a ambas calificaciones:** `vs_ref` 26 / 27 (96 %), kappa 0,94. El caso restante es
-p09 RAG #2 (asignación de `hecho_ref`). Se reporta el acuerdo bruto como medida de consistencia de v2.2 y el acuerdo tras las
-reglas como evidencia de que los desacuerdos eran de regla, no de lectura; v2.3 incorpora esas reglas con sus ejemplos.
+**Adjudicación (no es acuerdo entre evaluadores, D12).** Aplicando las reglas congeladas a ambas calificaciones, `vs_ref` queda en 26 / 27 (96 %), kappa 0,94. El caso restante es
+p09 RAG #2 (asignación de `hecho_ref`). **RQ6 se responde con el acuerdo bruto** (22/27, κ 0,73): es la única medida de acuerdo entre evaluadores. El 26/27 es una
+adjudicación hecha por el evaluador principal con las reglas que él mismo escribió; se reporta aparte, como evidencia de que los
+desacuerdos eran de regla y no de lectura, nunca como acuerdo. v2.3 incorpora esas reglas con sus ejemplos.
 
 **Límites.** 4 preguntas y 27 afirmaciones: el kappa es descriptivo, no una estimación poblacional. Un solo evaluador adicional.
 Afirmaciones pre-extraídas. La validación de la extracción de afirmaciones y de la tabla de hechos queda para la corrida nueva, si
@@ -522,9 +589,10 @@ piloto como dos corridas de la misma rúbrica sobre conjuntos distintos (no como
 
 ## 9. Propuesta de evaluación final
 
-Borrador v0.1 (2026-11-08) en `propuesta_evaluacion_final.md`: alcance y entregables, RQ1–RQ6 con la evidencia de las dos
-corridas, tabla de resultados, posicionamiento (matriz v4), limitaciones, trabajo futuro y plan de cierre, con tres decisiones
-marcadas para el director (tercera corrida o no; regla para negaciones en preguntas nulas; estructura y fechas del documento).
+Borrador v0.1 (2026-11-08) en `propuesta_evaluacion_final.md`, revisado por el director el 2026-11-10 (v0.2): no hay tercera
+corrida (D9), se mantiene la regla de negaciones en nulas listando sus casos (D10), la revisión asistida se documenta con SI/NO y
+delta de resultados (D11, §5.4.1) y RQ6 se responde con el acuerdo bruto, con la adjudicación aparte (D12, §7.3). Estructura y
+fechas del documento: pendientes de completar por el director. Siguiente: capítulo de evaluación.
 
 ## 10. Trabajo futuro (fuera del alcance por decisión D8)
 
