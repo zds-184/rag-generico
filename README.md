@@ -8,32 +8,71 @@ Arquitectura RAG **deliberadamente genérica** (chunking por caracteres → embe
 | Base vectorial | [Qdrant](https://qdrant.tech) | 6333 (REST/dashboard), 6334 (gRPC) |
 | API | FastAPI (`/query`, `/retrieve`, `/models`, `/collection`, `/health`) | 8000 |
 | Interfaz web | Streamlit, selector **RAG / Solo LLM / Comparar ambos** | 8501 |
-| Corpus | MITRE ATT&CK STIX 2.1 desde `mitre-attack/attack-stix-data` (siempre la última versión) | — |
+| Corpus | MITRE ATT&CK STIX 2.1 desde `mitre-attack/attack-stix-data` (descarga la rama `master`; los resultados publicados usan **Enterprise v19.2**, ver más abajo) | — |
 
-## Evaluación de este sistema (para revisión)
+## Evaluación de este sistema
 
-Este RAG es el *sistema bajo prueba* de un trabajo de tesis (USFQ) sobre **evaluación diagnóstica**: no se optimiza el RAG; se califica cada respuesta y se localiza en qué eslabón falla (corpus → recuperación → generación → citas).
+Este RAG es el *sistema bajo prueba* de un trabajo de titulación (Maestría en Ciencia de Datos, USFQ) sobre **evaluación diagnóstica**. No se optimiza el RAG. Se califica cada **afirmación** de cada respuesta y se localiza en qué eslabón se pierde cada hecho de la referencia: corpus (N0) → recuperación (N1) → generación (N2) → citas (N3). El mismo modelo se evalúa con recuperación (`rag`) y sin ella (`llm`).
 
-**Empieza por [`eval/pilot/protocol_v2.2.md`](eval/pilot/protocol_v2.2.md)**, el protocolo vigente (consolida el v1.1 y el borrador v2). Resumen de una página: [`eval/pilot/resumen_reunion.md`](eval/pilot/resumen_reunion.md).
+**Empieza por [`eval/pilot/protocol_v2.3.md`](eval/pilot/protocol_v2.3.md)**, la **rúbrica congelada** con las decisiones del director D1–D12 (2026-10-29 y 2026-11-10). El cierre de la evaluación está en [`eval/pilot/propuesta_evaluacion_final.md`](eval/pilot/propuesta_evaluacion_final.md).
 
-| Qué | Dónde (`eval/pilot/`) |
+### Resumen de resultados
+
+| | Piloto | Corrida 2 |
+|---|---|---|
+| Corrida (`eval/pilot/results/`) | `20260922_064359` | `20261104_102233` |
+| Preguntas (completa / parcial / nula) | 13 (5/4/4) | 18 (6/6/6) |
+| Respuestas calificadas (RAG + LLM) / afirmaciones | 26 / 92 | 36 / 142 |
+| Hechos de referencia cubiertos, RAG vs LLM | 14/33 vs 7/33 | 27/42 vs 7/42 |
+| Respuestas sin base (`NO-ABS`), RAG vs LLM | 0 vs 7 | 0 vs 8 |
+| Abstenciones erróneas (`ABS-E`) del RAG | 3 | 4 |
+
+Consistencia (RQ6): un segundo evaluador independiente calificó 27 afirmaciones de cuatro preguntas del piloto. El acuerdo en `vs_ref` fue de 22/27 (**κ de Cohen 0,73**). Tras fijar las reglas que esos desacuerdos obligaron a escribir, la adjudicación llega a 26/27, pero se reporta aparte (decisión D12). Todos los resultados son descriptivos: un sistema, una configuración y una muestra pequeña.
+
+### Mapa de archivos
+
+| Qué | Dónde |
 |---|---|
-| Piloto original, **congelado** (13 preguntas × 2 modos, con y sin RAG) | `questions.jsonl`, `run_pilot.py`, `results/20260922_064359/` |
-| Protocolo v1.1 (rúbrica de una nota por nivel, usada en el piloto) | `protocol.md` |
-| Herramientas de la rúbrica v2 (calificación por afirmación, N1 por evidencia, comparación con y sin RAG) | `evidence_build.py`, `evidence_check.py`, `comparar_modos.py`, `build_calificacion_v2.py` |
-| Datos de apoyo | `evidence_pilot.json`, `afirmaciones_ejemplos.csv`, `results/20260922_064359/n1_v2.json` |
-| Plantillas de calificación en Excel | `v2/calificacion_v2_DEMO.xlsx` (con 8 respuestas de ejemplo), `v2/calificacion_v2_piloto.xlsx` (en blanco) |
+| Protocolo vigente (v2.3) y su resumen de decisiones | `eval/pilot/protocol_v2.3.md`, `eval/pilot/protocol_v2.3_estructura.md` |
+| Versiones anteriores, solo como historial | `eval/pilot/protocol.md` (v1.1), `protocol_v2.md`, `protocol_v2.2.md` |
+| Script de corrida, controles previos y pruebas | `eval/pilot/run_pilot.py`, `eval/pilot/check_ingest.py`, `eval/pilot/tests/` |
+| **Piloto**: preguntas, traza y calificación v2.3 | `eval/pilot/questions.jsonl`, `eval/pilot/results/20260922_064359/`, `eval/pilot/v2/calificacion_v2.xlsx` |
+| Piloto: segundo evaluador (RQ6) | `eval/pilot/v2/calificacion_v2_eval_independent.xlsx` |
+| **Corrida 2**: preguntas y diseño del conjunto | `eval/run2/questions.jsonl`, `eval/run2/propuesta_preguntas.md`, `eval/run2/validacion_referencias.xlsx` |
+| Corrida 2: traza válida | `eval/pilot/results/20261104_102233/` (traces, config, huella del corpus, gold, empates) |
+| Corrida 2: calificación final | `eval/run2/calificacion_v2_run2.xlsx` |
+| Corrida 2: revisión asistida (D11) | `eval/run2/calificacion_v2_run2_revisada.xlsx` (hoja `Revisión`: antes, después, motivo, `¿aceptas?`) y `calificacion_v2_run2_original_reconstruida.xlsx` (calificación previa a la revisión) |
+| Corrida 2: extracción asistida de afirmaciones (sin juicio) | `eval/run2/afirmaciones_extraidas.json`, `fill_afirmaciones.py`, `fill_gold.py` |
+| Réplicas que **no se califican** | `results/20261104_072901/` y `results/20261104_084930/` (ver su `REPLICA.md`); muestran que con contextos idénticos cambian 19 de 36 respuestas pese a `temperature=0` |
+| Herramientas de la rúbrica v2 y datos de apoyo | `evidence_build.py`, `evidence_check.py`, `comparar_modos.py`, `build_calificacion_v2.py`, `evidence_pilot.json`, `afirmaciones_ejemplos.csv` |
+| Plantillas Excel | `eval/pilot/v2/calificacion_v2_DEMO.xlsx` (8 respuestas de ejemplo), `calificacion_v2_piloto.xlsx` (en blanco) |
 
-Estado: borrador para revisión del director; un solo evaluador, 13 preguntas y una corrida, por lo que los resultados del piloto son descriptivos y no generalizables.
+### Reproducir
 
-Reproducir las herramientas sobre la corrida del piloto (no requieren Ollama ni Qdrant; `evidence_check.py` escribe `n1_v2.json` junto a la corrida y `comparar_modos.py` solo imprime):
+Las herramientas de calificación no requieren Ollama ni Qdrant:
 
 ```bash
 python eval/pilot/evidence_check.py eval/pilot/results/20260922_064359
 python eval/pilot/comparar_modos.py eval/pilot/afirmaciones_ejemplos.csv
+python eval/pilot/tests/test_chunking.py
+python eval/pilot/tests/test_rank_hits.py
+python eval/pilot/tests/test_run_pilot_guards.py
 ```
 
-Una corrida nueva (`python eval/pilot/run_pilot.py`) requiere el sistema levantado y tarda ~35 min en CPU. No usar `run_pilot.py --rebuild-xlsx` sobre un libro ya calificado: sobrescribe la calificación manual.
+Una corrida nueva requiere el sistema levantado con la ingesta completa y tarda ~35 min en CPU:
+
+```bash
+python eval/pilot/check_ingest.py
+python eval/pilot/run_pilot.py --questions eval/run2/questions.jsonl
+python eval/pilot/run_pilot.py --check-ties eval/pilot/results/<corrida>
+```
+
+`run_pilot.py` usa la configuración de las corridas publicadas (`hybrid`, `top_k=5`, `temperature=0`, modos `rag,llm`) y guarda con cada corrida `config.json`, la huella SHA-256 de `chunks.jsonl`, una instantánea de las preguntas y el texto de los fragmentos gold. Por seguridad:
+- se niega a arrancar si la ingesta está incompleta;
+- con `--resume`, se niega a continuar si la configuración cambió;
+- con `--rebuild-xlsx`, no sobrescribe un libro ya calificado salvo con `--force`.
+
+**Versión del corpus.** La ingesta descarga la última versión publicada. Para reproducir los resultados hay que usar **Enterprise v19.2**: 2 616 documentos y 7 244 chunks, `chunks_jsonl_sha256` registrado en el `config.json` de cada corrida. Si `master` ya avanzó, apunta `ATTACK_BASE_URL` en `.env` al commit o tag de `attack-stix-data` que publica v19.2 y reingesta con `FORCE_REINGEST=true`.
 
 ## Arquitectura
 
@@ -112,7 +151,7 @@ Accesos:
 | `EXTRA_MODELS` | Modelos adicionales a descargar para poder alternarlos en la UI | `qwen3:4b` |
 | `EMBED_MODEL` | Modelo de embeddings (cambiarlo exige `FORCE_REINGEST=true`) | `granite-embedding:30m` |
 | `LLM_THINK` | Modo razonamiento para qwen3 / deepseek‑r1 (`false` = respuestas directas) | `false` |
-| `LLM_TEMPERATURE`, `LLM_NUM_CTX`, `LLM_NUM_PREDICT` | Parámetros de generación | `0.1`, `4096`, `1024` |
+| `LLM_TEMPERATURE`, `LLM_NUM_CTX`, `LLM_NUM_PREDICT` | Parámetros de generación (las corridas de evaluación fijan `temperature=0` por petición) | `0.1`, `4096`, `1024` |
 | `REQUEST_TIMEOUT` | Timeout (s) de las llamadas a Ollama | `1800` |
 | `ATTACK_DOMAINS` | `enterprise-attack`, `mobile-attack`, `ics-attack` (separados por coma) | `enterprise-attack` |
 | `MAX_PROCEDURE_EXAMPLES` | Nº máx. de ejemplos de procedimiento por técnica | `25` |
@@ -155,8 +194,8 @@ Embeddings alternativos: `nomic-embed-text` (768d, mejor calidad, ~5x más lento
   "question": "What is T1059.001 and which mitigations apply to it?",
   "mode": "rag",                 // "rag" | "llm"
   "top_k": 5,
-  "model": "qwen3:4b",           // opcional, cualquier modelo cargado en Ollama
-  "temperature": 0.1,
+  "model": "qwen3:4b-instruct",  // opcional, cualquier modelo cargado en Ollama
+  "temperature": 0,
   "filters": {"object_type": ["technique", "sub-technique"]},   // opcional
   "think": false,
   "retrieval": "hybrid",         // "hybrid" | "dense" | "sparse" (opcional; por defecto RETRIEVAL_MODE)
@@ -168,18 +207,18 @@ Respuesta (todo lo necesario para métricas de retrieval y generación):
 
 ```json
 {
-  "question": "...", "mode": "rag", "model": "qwen3:4b",
+  "question": "...", "mode": "rag", "model": "qwen3:4b-instruct",
   "answer": "...",
   "contexts": [
-    {"rank": 1, "score": 0.83, "point_id": "...", "text": "...",
+    {"rank": 1, "score": 0.0325, "point_id": "...", "text": "...",
      "metadata": {"attack_id": "T1059.001", "name": "PowerShell", "object_type": "sub-technique",
-                  "domain": "enterprise-attack", "attack_version": "17.1", "url": "https://attack.mitre.org/techniques/T1059/001",
+                  "domain": "enterprise-attack", "attack_version": "19.2", "url": "https://attack.mitre.org/techniques/T1059/001",
                   "tactics": ["execution"], "platforms": ["Windows"], "chunk_index": 0, "n_chunks": 3}}
   ],
   "prompt": {"system": "...", "user": "..."},
   "usage": {"prompt_tokens": 1834, "completion_tokens": 212},
   "timings_ms": {"retrieval": 41.2, "generation": 5321.0, "total": 5362.2, "ollama": {...}},
-  "params": {"top_k": 5, "temperature": 0.1, "think": false, "embed_model": "nomic-embed-text", "collection": "mitre_attack", "filters": {}}
+  "params": {"top_k": 5, "temperature": 0, "think": false, "embed_model": "granite-embedding:30m", "collection": "mitre_attack", "filters": {}}
 }
 ```
 
@@ -220,7 +259,10 @@ RAG/
 │     ├─ pipeline.py         # retrieve -> prompt -> generate
 │     └─ ingest.py           # python -m rag.ingest
 ├─ ui/app.py                 # Streamlit
-├─ eval/                     # cliente de ejemplo, preguntas de muestra y piloto de evaluación (ver protocol_v2.2.md)
+├─ eval/
+│  ├─ example_client.py      # cliente de ejemplo + sample_questions.jsonl
+│  ├─ pilot/                 # protocolo v2.3, run_pilot.py, check_ingest.py, tests/, piloto y results/ de todas las corridas
+│  └─ run2/                  # conjunto de la corrida 2, extracción asistida y libros de calificación
 └─ data/                     # artefactos de la ingesta (volumen)
 ```
 
@@ -234,7 +276,7 @@ docker compose down                            # parar (conserva modelos e índi
 docker compose down -v                         # parar y borrar modelos + índice
 ```
 
-Para usar un Ollama ya instalado en Windows en lugar del contenedor: en `.env` pon `OLLAMA_URL=http://host.docker.internal:11434`, descarga los modelos con `ollama pull qwen3:4b` y `ollama pull nomic-embed-text` en el host, y arranca sin los servicios de Ollama: `docker compose up -d qdrant api ui` seguido de `docker compose run --rm --no-deps ingest`.
+Para usar un Ollama ya instalado en Windows en lugar del contenedor: en `.env` pon `OLLAMA_URL=http://host.docker.internal:11434`, descarga los modelos con `ollama pull qwen3:4b-instruct` y `ollama pull granite-embedding:30m` en el host, y arranca sin los servicios de Ollama: `docker compose up -d qdrant api ui` seguido de `docker compose run --rm --no-deps ingest`.
 
 ## Notas de diseño para la evaluación
 
@@ -242,3 +284,5 @@ Para usar un Ollama ya instalado en Windows en lugar del contenedor: en `.env` p
 - Cada respuesta devuelve el prompt exacto, los chunks con `score` y metadatos, tokens y tiempos: suficiente para faithfulness, answer relevancy, context precision/recall y coste/latencia.
 - El retrieval ofrece tres estrategias seleccionables por petición: `dense` (coseno sobre embeddings), `sparse` (BM25: TF en cliente, IDF en Qdrant) e `hybrid` (ambas + Reciprocal Rank Fusion). La densa pura falla con identificadores exactos (una pregunta por "T1059.001" devolvía DC0059, S1059, G0059 con `granite-embedding:30m`); BM25 corrige justamente eso. Sobre las 6 preguntas de `eval/sample_questions.jsonl` medimos hit@5 = 4/6 (dense), 5/6 (sparse) y 6/6 (hybrid), por lo que el híbrido es el valor por defecto y el evaluador puede comparar las tres. Sin re‑ranking: puntos de extensión naturales en `pipeline.retrieve` (re‑ranker, HyDE, multi‑query) y `prompts.py`.
 - Con `hybrid`, el `score` de cada contexto es el valor RRF (≈ 1/(60+rango) sumado), no una similitud coseno; con `dense` es coseno y con `sparse` el BM25 de Qdrant.
+- **Desempate determinista** (`vectorstore.rank_hits`): los resultados se ordenan por score descendente y, en caso de empate, por `point_id` ascendente. Sin esta regla, los fragmentos empatados en la frontera del top‑k cambiaban de orden entre ejecuciones. `run_pilot.py --check-ties` verifica, sobre una corrida, que el top‑k de la traza coincide con una consulta posterior.
+- **No determinismo de la generación**: aunque se use `temperature=0`, Ollama en CPU produjo respuestas distintas con contextos idénticos (19 de 36 en las réplicas de la corrida 2). Por eso la evaluación califica la traza guardada (`traces.jsonl`) de una corrida concreta, no una respuesta que se espere reproducir idéntica.
