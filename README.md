@@ -24,10 +24,12 @@ Este RAG es el *sistema bajo prueba* de un trabajo de titulación (Maestría en 
 | Preguntas (completa / parcial / nula) | 13 (5/4/4) | 18 (6/6/6) |
 | Respuestas calificadas (RAG + LLM) / afirmaciones | 26 / 92 | 36 / 142 |
 | Hechos de referencia cubiertos, RAG vs LLM | 14/33 vs 8/33 | 27/42 vs 7/42 |
-| Respuestas sin base (`NO-ABS`), RAG vs LLM | 0 vs 7 | 0 vs 8 |
+| Respuestas sin base (`NO-ABS`), RAG vs LLM | 0 vs 6 | 0 vs 8 |
 | Abstenciones erróneas (`ABS-E`) del RAG | 3 | 4 |
 
-Consistencia (RQ6): un segundo evaluador independiente calificó 27 afirmaciones de cuatro preguntas del piloto. El acuerdo en `vs_ref` fue de 22/27 (**κ de Cohen 0,73**). Tras fijar las reglas que esos desacuerdos obligaron a escribir, la adjudicación llega a 26/27, pero se reporta aparte (decisión D12). Todos los resultados son descriptivos: un sistema, una configuración y una muestra pequeña.
+Consistencia (RQ6): un segundo evaluador independiente calificó 27 afirmaciones de cuatro preguntas del piloto. Con las calificaciones tal como se entregaron, el acuerdo en `vs_ref` fue de 23/27 (**κ de Cohen 0,78**); los cuatro desacuerdos correspondían a la regla de la parte no respondible, que cambió después (D2). La adjudicación con las reglas congeladas llega a 26/27, pero se reporta aparte (decisión D12). Todos los resultados son descriptivos: un sistema, una configuración y una muestra pequeña.
+
+Notas de lectura (actualizado el 2026-11-24, protocolo §5.4.4): los dos modos usan instrucciones distintas (`app/rag/prompts.py`), así que la diferencia en `NO-ABS` no mide solo la recuperación; las cifras de la corrida 2 son las de la calificación final, que incorpora una revisión asistida (§5.4.1) y dos revisiones de coherencia registradas en las hojas `Revisión 2026-11-17` y `Revisión 2026-11-24` de los libros; de las 7 abstenciones erróneas del RAG, 4 se explican solo por fragmentos que no entraron en el top-5.
 
 ### Mapa de archivos
 

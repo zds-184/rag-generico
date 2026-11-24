@@ -1,6 +1,6 @@
 # Propuesta de evaluación final 
 
-**Estudiante:** Darwin Simba · **Fecha:** 2026-11-08 · **Estado:** v0.2, con la respuesta del director del 2026-11-10 incorporada (§9 del protocolo v2.3)
+**Estudiante:** Darwin Simba · **Fecha:** 2026-11-08 · **Estado:** v0.2, con la respuesta del director del 2026-11-10 incorporada (§9 del protocolo v2.3); cifras actualizadas el 2026-11-24 tras las observaciones del director al documento (protocolo §5.4.4 y §7.3)
 **Repositorio:** https://github.com/zds-184/rag-generico · **Documentos base:** `eval/pilot/protocol_v2.3.md` (rúbrica congelada),
 `matriz_comparativa_evaluacion_RAG_v4.xlsx` (posicionamiento), `eval/pilot/v2/calificacion_v2.xlsx` (piloto) y
 `eval/run2/calificacion_v2_run2.xlsx` (corrida 2).
@@ -41,43 +41,54 @@ medición y solo se reporta.
 
 | | Sub-pregunta | Evidencia disponible | Respuesta propuesta |
 |---|---|---|---|
-| RQ1 | ¿Existía la información en el corpus? | 31 preguntas en dos conjuntos (completas 11, parciales 10, nulas 10), cada referencia verificada literalmente en el corpus; categorías nuevas en la corrida 2: técnica retirada (n15) y conocimiento MITRE adyacente (n18) | Sí: N0 se fija por diseño y queda registrado por pregunta, cosa que ninguna de las ocho métricas de la matriz hace |
-| RQ2 | ¿La recuperación trajo la evidencia? | `llegó` por hecho leído en los contextos; gold en el top-5 en 6/9 (piloto) y 10/12 (corrida 2) preguntas respondibles; desempate determinista verificado en vivo (D6) | Sí, por hecho y aceptando evidencia alternativa; los fallos de recuperación se localizan (p01, p08; n02, n03, n07, n12) |
+| RQ1 | ¿Existía la información en el corpus? | 31 preguntas en dos conjuntos (completas 11, parciales 10, nulas 10), cada referencia verificada literalmente en el corpus; categorías nuevas en la corrida 2: técnica retirada (n15) y conocimiento MITRE adyacente (n18) | N0 es una condición del protocolo, no un resultado: se fija por diseño y queda registrado por pregunta, cosa que ninguna de las ocho métricas de la matriz hace |
+| RQ2 | ¿La recuperación trajo la evidencia? | `llegó` por hecho leído en los contextos; gold en el top-5 en 6/9 (piloto) y 10/12 (corrida 2) preguntas respondibles; desempate determinista verificado en vivo (D6) | Sí, por hecho y aceptando evidencia alternativa; la lectura por hecho atribuye a la recuperación al menos un fallo en 9 respuestas RAG (p01, p02, p05, p08, p09; n02, n03, n07, n12) |
 | RQ3 | ¿Cada afirmación es correcta, completa y fiel? | 234 afirmaciones calificadas (92 piloto + 142 corrida 2) | Sí; la regla de enunciación (D2) es la que más decisiones resuelve |
-| RQ4 | ¿Cada afirmación está sostenida por su cita? | precisión de citas 71 % (piloto) y 74 % (corrida 2); cobertura de citas 39 % → 55 %; códigos CITA-X / SIN-CITA | Sí; el defecto dominante cambia de CITA-X (piloto) a SIN-CITA (corrida 2: listas sin [n]), mismo problema de generación |
-| RQ5 | ¿En qué se diferencian con y sin recuperación? | Lecturas A–D en ambas corridas (tabla §3) | El RAG cubre más hechos (42 % y 64 % frente a 24 % y 17 %), nunca responde sin base (NO-ABS 0 frente a 7 y 8) y su coste es la abstención errónea cuando la evidencia no llega (ABS-E 3 y 4, casi siempre con `llegó = NO`) |
-| RQ6 | ¿Es consistente entre evaluadores? | Segundo evaluador independiente en 4 preguntas / 27 afirmaciones: acuerdo bruto `vs_ref` 22/27 (κ 0,73), `tipo` 26/27 (κ 0,89). Aparte, como adjudicación y no como acuerdo: 26/27 tras aplicar las reglas congeladas a ambas calificaciones | Sí en lo esencial, con el acuerdo bruto como respuesta; 4 de los 5 desacuerdos de `vs_ref` eran una sola regla (parte no respondible), que D2 cerró. Límite: afirmaciones pre-extraídas, muestra pequeña, un evaluador adicional |
+| RQ4 | ¿Cada afirmación está sostenida por su cita? | precisión de citas 71 % (piloto) y 74 % (corrida 2); cobertura de citas 39 % → 55 %; códigos CITA-X / SIN-CITA | Sí; el defecto dominante es distinto en cada corrida: CITA-X en el piloto (4 frente a 1) y SIN-CITA en la corrida 2 (9 frente a 1: listas sin [n]) |
+| RQ5 | ¿En qué se diferencian con y sin recuperación? | Lecturas A–D en ambas corridas (tabla §3) | El RAG cubre más hechos (42 % y 64 % frente a 24 % y 17 %), no responde sin base (NO-ABS 0 frente a 6 y 8, es decir 14 de 20; los dos modos usan instrucciones distintas, así que la diferencia no mide solo la recuperación) y su coste es la abstención errónea (ABS-E 3 y 4): de las 7, en 4 ningún hecho negado había llegado (E1), en 1 habían llegado todos (E2) y en 2 se juntan las dos causas |
+| RQ6 | ¿Es consistente entre evaluadores? | Segundo evaluador independiente en 4 preguntas / 27 afirmaciones: acuerdo bruto `vs_ref` 23/27 (κ 0,78) y `tipo` 26/27 (κ 0,89), con las calificaciones tal como se entregaron el 2026-10-23. Aparte, como adjudicación y no como acuerdo: 26/27 tras aplicar las reglas congeladas a ambas calificaciones | Sí en lo esencial, con el acuerdo bruto como respuesta; los 4 desacuerdos de `vs_ref` eran una sola regla (parte no respondible): v2.2 la tenía escrita de una forma, el segundo evaluador la aplicó y D2 la cambió después. Límite: afirmaciones pre-extraídas, muestra pequeña, un evaluador adicional |
 
 ## 3. Resultados que propongo reportar (descriptivos, sin pruebas de significancia)
 
 | Lectura | Piloto RAG | Piloto LLM | Corrida 2 RAG | Corrida 2 LLM |
 |---|---|---|---|---|
 | A. Hechos cubiertos | 14/33 (42 %) | 8/33 (24 %) | 27/42 (64 %) | 7/42 (17 %) |
-| A. Afirmaciones INCORRECTA | 19 % | 24 % | 0 % (0/38) | 28 % (22/79) |
+| A. Afirmaciones INCORRECTA | 19 % (4/21) | 25 % (13/53) | 0 % (0/38) | 27 % (22/81) |
 | B. Respuestas con ABS-E | 3 | 0 | 4 | 0 |
-| B. Respuestas con NO-ABS | 0 | 7 | 0 | 8 |
+| B. Respuestas con NO-ABS | 0 | 6 | 0 | 8 |
 | C. Precisión / cobertura de citas | 71 % / 39 % | — | 74 % / 55 % | — |
 | C. SIN-R / CITA-X / SIN-C | 1 / 4 / 1 | — | 0 / 1 / 9 | — |
-| D. Afirmaciones FUERA_REF | 3 | 33 | 10 | 52 |
+| D. Afirmaciones FUERA_REF | 3 | 31 | 10 | 54 |
 | N2 promedio | 1,38 | 0,46 | 1,61 | 0,17 |
-| Diagnóstico dominante | E1 y E1+E3 | E2 | OK (9) y E3 (5) | E2 (10) y E0 (6) |
+| Respuestas OK | 7 | 1 | 9 | 0 |
+| Diagnóstico más frecuente (respuestas con la etiqueta) | E1 (5) | E2 (9) | E3 (6), E1 (4) | E2 (12), E0 (8) |
 
-Las dos corridas se presentan como **dos aplicaciones de la misma rúbrica sobre conjuntos distintos**, no como una mejora del
-sistema: la diferencia en INCORRECTA del RAG (19 % → 0 %) se explica porque el conjunto 2 tiene menos preguntas de relación entre
-objetos (tipo p05), y la del defecto de citas (CITA-X → SIN-CITA) porque cambió el tipo de lista pedida. Lo que se mantiene en
-ambas es lo que propongo como hallazgo: (a) el RAG no responde sin base y el LLM lo hace en todas las nulas; (b) cuando el RAG
-falla, el protocolo localiza si fue la recuperación (E1, la mayoría) o la generación (E2, un caso por corrida); (c) las citas
-fallan por forma (sin [n]) más que por fondo (SIN-RESPALDO 1 y 0).
+Las dos corridas se presentan como **dos aplicaciones de la misma rúbrica**, no como un antes y un después del sistema. Entre
+ellas cambiaron el conjunto de preguntas, la fragmentación y el desempate (reingesta de 7 241 a 7 244 fragmentos) y la forma de
+calificar, porque la corrida 2 pasó por una revisión asistida. La diferencia en INCORRECTA del RAG (19 % → 0 %) no se explica
+solo por el conjunto: mi calificación original de la corrida 2 tenía 16 % y el 0 % aparece con la revisión. Lo que propongo
+como hallazgo: (a) el RAG no responde sin base y el LLM lo hace en todas las nulas, con la salvedad de que los dos modos usan
+instrucciones distintas; (b) cuando el RAG falla, el protocolo separa si fue la recuperación (E1), la generación (E2) o ambas;
+(c) el defecto de citas dominante cambia de corrida a corrida (CITA-X en el piloto, SIN-CITA en la corrida 2) y las
+afirmaciones sin ningún respaldo son 1 y 0.
 
 **[resuelto]** No hay tercera corrida (director, 2026-11-10): dos conjuntos bastan para mostrar el protocolo.
 
 **Revisión asistida de la calificación de la corrida 2.** La calificación manual pasó por una revisión propuesta por el asistente
 (67 cambios en 48 de 142 afirmaciones; todos aceptados por mí, `SI` en la hoja `Revisión`). Entre mi calificación y la final el
-RAG pasa de 57 % a 64 % de hechos cubiertos, de 16 % a 0 % de `INCORRECTA` y de 0 a 4 respuestas con `ABS-E`; el LLM de 26 % a
-27 % de `INCORRECTA` y mantiene 8 `NO-ABS`. Las causas son dos reglas aplicadas de forma uniforme: extras de lista que no
+RAG pasa de 57 % a 64 % de hechos cubiertos, de 16 % a 0 % de `INCORRECTA`, de 0 a 4 respuestas con `ABS-E` y de 1 a 0 con
+`NO-ABS`; el LLM de 26 % a 27 % de `INCORRECTA` y mantiene 8 `NO-ABS`. La misma hoja llenó los 42 valores de `llegó`, que en mi
+calificación estaban vacíos y de los que dependen todos los E1 y E2 de la corrida 2; la columna de aceptación la llené el
+2026-11-10. Las causas son dos reglas aplicadas de forma uniforme: extras de lista que no
 contradicen la referencia son `FUERA_REF`, y "los contextos no mencionan…" es una abstención, que al negar un hecho que la
 referencia contiene se registra como `ABS-E`. El detalle, tabla completa y límite (el mismo asistente extrajo y revisó) están en
 el protocolo §5.4.1.
+
+**Revisiones de coherencia (2026-11-17 y 2026-11-24).** La regla de la parte no respondible y la de las negaciones sobre objetos
+fuera del corpus no se habían aplicado igual en las dos corridas. Se unificaron en dos pasos, propuestos por un asistente y
+aceptados por mí, registrados en las hojas `Revisión 2026-11-17` y `Revisión 2026-11-24` de los dos libros (protocolo §5.4.3 y
+§5.4.4). Solo cambian cifras del modo LLM: piloto, `NO-ABS` de 7 a 6, `INCORRECTA` 13/53 (25 %), `FUERA_REF` 31; corrida 2,
+`INCORRECTA` 22/81 (27 %), `FUERA_REF` 54. El total de respuestas sin base del LLM queda en 14 de 20.
 
 ## 4. Posicionamiento frente a la literatura (matriz v4)
 
@@ -86,7 +97,7 @@ recuperador o al generador. Lo que propongo como diferencia, y que la matriz mue
 
 1. La **cobertura del corpus por pregunta (N0) como condición previa**: ninguna de las ocho métricas registra si la información
    existía, por lo que confunden "no llegó" con "no existía" y no pueden definir la abstención debida. RGB mide el rechazo solo en
-   el caso extremo (ningún documento útil) y con documentos manipulados, sin recuperador real.
+   el caso extremo (ningún documento útil); sus documentos son reales, pero el modelo recibe un conjunto fijo y no recupera.
 2. **Varios fallos registrados en la misma respuesta** con la referencia por hechos que los separa (p. ej. n07 RAG: E1 + E3).
 3. **Las citas como último eslabón de esa misma cadena**, en la misma tabla por afirmación, con la distinción cita incorrecta /
    hecho omitido / correcto sin respaldo que ALCE y CiteEval no hacen.
