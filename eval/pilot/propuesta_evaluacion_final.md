@@ -45,7 +45,7 @@ medición y solo se reporta.
 | RQ2 | ¿La recuperación trajo la evidencia? | `llegó` por hecho leído en los contextos; gold en el top-5 en 6/9 (piloto) y 10/12 (corrida 2) preguntas respondibles; desempate determinista verificado en vivo (D6) | Sí, por hecho y aceptando evidencia alternativa; la lectura por hecho atribuye a la recuperación al menos un fallo en 9 respuestas RAG (p01, p02, p05, p08, p09; n02, n03, n07, n12) |
 | RQ3 | ¿Cada afirmación es correcta, completa y fiel? | 234 afirmaciones calificadas (92 piloto + 142 corrida 2) | Sí; la regla de enunciación (D2) es la que más decisiones resuelve |
 | RQ4 | ¿Cada afirmación está sostenida por su cita? | precisión de citas 71 % (piloto) y 74 % (corrida 2); cobertura de citas 39 % → 55 %; códigos CITA-X / SIN-CITA | Sí; el defecto dominante es distinto en cada corrida: CITA-X en el piloto (4 frente a 1) y SIN-CITA en la corrida 2 (9 frente a 1: listas sin [n]) |
-| RQ5 | ¿En qué se diferencian con y sin recuperación? | Lecturas A–D en ambas corridas (tabla §3) | El RAG cubre más hechos (42 % y 64 % frente a 24 % y 17 %), no responde sin base (NO-ABS 0 frente a 6 y 8, es decir 14 de 20; los dos modos usan instrucciones distintas, así que la diferencia no mide solo la recuperación) y su coste es la abstención errónea (ABS-E 3 y 4): de las 7, en 4 ningún hecho negado había llegado (E1), en 1 habían llegado todos (E2) y en 2 se juntan las dos causas |
+| RQ5 | ¿En qué se diferencian con y sin recuperación? | Lecturas A–D en ambas corridas (tabla §3) | El RAG cubre más hechos (42 % y 64 % frente a 24 % y 17 %), no responde sin base (NO-ABS 0 frente a 6 y 7, es decir 13 de 20; los dos modos usan instrucciones distintas, así que la diferencia no mide solo la recuperación) y su coste es la abstención errónea (ABS-E 3 y 4): de las 7, en 4 ningún hecho negado había llegado (E1), en 1 habían llegado todos (E2) y en 2 se juntan las dos causas |
 | RQ6 | ¿Es consistente entre evaluadores? | Segundo evaluador independiente en 4 preguntas / 27 afirmaciones: acuerdo bruto `vs_ref` 23/27 (κ 0,78) y `tipo` 26/27 (κ 0,89), con las calificaciones tal como se entregaron el 2026-10-23. Aparte, como adjudicación y no como acuerdo: 26/27 tras aplicar las reglas congeladas a ambas calificaciones | Sí en lo esencial, con el acuerdo bruto como respuesta; los 4 desacuerdos de `vs_ref` eran una sola regla (parte no respondible): v2.2 la tenía escrita de una forma, el segundo evaluador la aplicó y D2 la cambió después. Límite: afirmaciones pre-extraídas, muestra pequeña, un evaluador adicional |
 
 ## 3. Resultados que propongo reportar (descriptivos, sin pruebas de significancia)
@@ -53,21 +53,21 @@ medición y solo se reporta.
 | Lectura | Piloto RAG | Piloto LLM | Corrida 2 RAG | Corrida 2 LLM |
 |---|---|---|---|---|
 | A. Hechos cubiertos | 14/33 (42 %) | 8/33 (24 %) | 27/42 (64 %) | 7/42 (17 %) |
-| A. Afirmaciones INCORRECTA | 19 % (4/21) | 25 % (13/53) | 0 % (0/38) | 27 % (22/81) |
+| A. Afirmaciones INCORRECTA | 19 % (4/21) | 25 % (13/53) | 0 % (0/38) | 28 % (22/80) |
 | B. Respuestas con ABS-E | 3 | 0 | 4 | 0 |
-| B. Respuestas con NO-ABS | 0 | 6 | 0 | 8 |
+| B. Respuestas con NO-ABS | 0 | 6 | 0 | 7 |
 | C. Precisión / cobertura de citas | 71 % / 39 % | — | 74 % / 55 % | — |
 | C. SIN-R / CITA-X / SIN-C | 1 / 4 / 1 | — | 0 / 1 / 9 | — |
-| D. Afirmaciones FUERA_REF | 3 | 31 | 10 | 54 |
-| N2 promedio | 1,38 | 0,46 | 1,61 | 0,17 |
-| Respuestas OK | 7 | 1 | 9 | 0 |
-| Diagnóstico más frecuente (respuestas con la etiqueta) | E1 (5) | E2 (9) | E3 (6), E1 (4) | E2 (12), E0 (8) |
+| D. Afirmaciones FUERA_REF | 3 | 31 | 10 | 53 |
+| N2 promedio | 1,38 | 0,46 | 1,61 | 0,28 |
+| Respuestas OK | 7 | 1 | 9 | 1 |
+| Diagnóstico más frecuente (respuestas con la etiqueta) | E1 (5) | E2 (9) | E3 (6), E1 (4) | E2 (12), E0 (7) |
 
 Las dos corridas se presentan como **dos aplicaciones de la misma rúbrica**, no como un antes y un después del sistema. Entre
 ellas cambiaron el conjunto de preguntas, la fragmentación y el desempate (reingesta de 7 241 a 7 244 fragmentos) y la forma de
 calificar, porque la corrida 2 pasó por una revisión asistida. La diferencia en INCORRECTA del RAG (19 % → 0 %) no se explica
 solo por el conjunto: mi calificación original de la corrida 2 tenía 16 % y el 0 % aparece con la revisión. Lo que propongo
-como hallazgo: (a) el RAG no responde sin base y el LLM lo hace en todas las nulas, con la salvedad de que los dos modos usan
+como hallazgo: (a) el RAG no responde sin base y el LLM lo hace en 9 de las 10 nulas, con la salvedad de que los dos modos usan
 instrucciones distintas; (b) cuando el RAG falla, el protocolo separa si fue la recuperación (E1), la generación (E2) o ambas;
 (c) el defecto de citas dominante cambia de corrida a corrida (CITA-X en el piloto, SIN-CITA en la corrida 2) y las
 afirmaciones sin ningún respaldo son 1 y 0.
@@ -88,7 +88,7 @@ el protocolo §5.4.1.
 fuera del corpus no se habían aplicado igual en las dos corridas. Se unificaron en dos pasos, propuestos por un asistente y
 aceptados por mí, registrados en las hojas `Revisión 2026-11-17` y `Revisión 2026-11-24` de los dos libros (protocolo §5.4.3 y
 §5.4.4). Solo cambian cifras del modo LLM: piloto, `NO-ABS` de 7 a 6, `INCORRECTA` 13/53 (25 %), `FUERA_REF` 31; corrida 2,
-`INCORRECTA` 22/81 (27 %), `FUERA_REF` 54. El total de respuestas sin base del LLM queda en 14 de 20.
+`NO-ABS` de 8 a 7 (n17 LLM #1, una negación verdadera sobre la fuente en una pregunta nula, pasa a abstención correcta por D10), `INCORRECTA` 22/80 (28 %), `FUERA_REF` 53. El total de respuestas sin base del LLM queda en 13 de 20.
 
 ## 4. Posicionamiento frente a la literatura (matriz v4)
 

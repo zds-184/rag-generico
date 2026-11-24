@@ -24,7 +24,7 @@ Este RAG es el *sistema bajo prueba* de un trabajo de titulación (Maestría en 
 | Preguntas (completa / parcial / nula) | 13 (5/4/4) | 18 (6/6/6) |
 | Respuestas calificadas (RAG + LLM) / afirmaciones | 26 / 92 | 36 / 142 |
 | Hechos de referencia cubiertos, RAG vs LLM | 14/33 vs 8/33 | 27/42 vs 7/42 |
-| Respuestas sin base (`NO-ABS`), RAG vs LLM | 0 vs 6 | 0 vs 8 |
+| Respuestas sin base (`NO-ABS`), RAG vs LLM | 0 vs 6 | 0 vs 7 |
 | Abstenciones erróneas (`ABS-E`) del RAG | 3 | 4 |
 
 Consistencia (RQ6): un segundo evaluador independiente calificó 27 afirmaciones de cuatro preguntas del piloto. Con las calificaciones tal como se entregaron, el acuerdo en `vs_ref` fue de 23/27 (**κ de Cohen 0,78**); los cuatro desacuerdos correspondían a la regla de la parte no respondible, que cambió después (D2). La adjudicación con las reglas congeladas llega a 26/27, pero se reporta aparte (decisión D12). Todos los resultados son descriptivos: un sistema, una configuración y una muestra pequeña.
