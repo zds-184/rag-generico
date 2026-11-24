@@ -4,6 +4,8 @@
 `protocol_v2.2.md` como referencia para la corrida reproducible (§8) y el documento final. `protocol.md` (v1.1), `protocol_v2.md`,
 `protocol_v2.2.md`, `questions.jsonl` y la corrida `20260922_064359` siguen intactos.
 
+**Estado (2026-11-24).** Observaciones del director sobre el documento: segunda revisión de coherencia de la parte no respondible y de las negaciones sobre objetos fuera del corpus (§5.4.4); el acuerdo bruto se reporta con las calificaciones tal como se entregaron el 2026-10-23 (§7.3).
+**Estado (2026-11-17).** Revisión de coherencia de `zona = no_resp` y corrección de las cifras del piloto LLM (§5.4.3).
 **Estado (2026-11-10).** Respuesta del director recibida (D9–D12); sigue el capítulo de evaluación. Estado anterior: §1–§7 cerrados. §8: código de la corrida reproducible hecho y probado sin servicios; faltan la reingesta,
 el conjunto nuevo de preguntas y la corrida. §9 (propuesta de evaluación final) se redacta tras la corrida.
 
@@ -34,7 +36,7 @@ Alcance acordado con el director: **evaluar y diagnosticar** las respuestas. El 
 | D9 (2026-11-10) | No hay tercera corrida: dos conjuntos bastan para mostrar el protocolo | §9 |
 | D10 (2026-11-10) | Se mantiene la regla para negaciones en preguntas nulas; el capítulo lista los casos donde se aplicó (n15, n18) | §3.2, §5.4.2 |
 | D11 (2026-11-10) | La revisión asistida de la calificación se documenta (quién la propuso, qué cambió, cuánto cambió) y cada cambio lleva SI/NO del evaluador | §5.4.1 |
-| D12 (2026-11-10) | RQ6 se responde con el acuerdo bruto (22/27, κ 0,73); el 26/27 tras las reglas es una adjudicación y se reporta aparte | §7.3 |
+| D12 (2026-11-10) | RQ6 se responde con el acuerdo bruto; el 26/27 tras las reglas es una adjudicación y se reporta aparte. El acuerdo bruto es 23/27 (κ 0,78) con las calificaciones tal como se entregaron; el 22/27 (κ 0,73) que figuraba aquí incluía un cambio posterior del evaluador principal (corregido el 2026-11-24, §7.3) | §7.3 |
 
 Observaciones del director sobre el posicionamiento, incorporadas en §1 y §7: RAGChecker ya atribuye recuperador y generador por
 afirmación, así que no se presenta "localizar el origen de los errores" como novedad; la contribución es la cobertura del corpus por
@@ -118,7 +120,15 @@ Es la base de las omisiones y de E1 frente a E2.
   el propio modelo, abstención.
 - **Parte no respondible.** Una `abstencion` con `zona=no_resp` no enuncia ningún hecho de la referencia, por lo que por D2 es
   `FUERA_REF` y no cuenta para N2; se registra como abstención debida en la lectura B (§5.2) y no genera código. Un `hecho` con
-  `zona=no_resp` ("MITRE no recomienda ningún producto comercial") es `FUERA_REF` + `NO-ABS`.
+  `zona=no_resp` que responde a esa parte ("el producto recomendado es Microsoft Defender") es `FUERA_REF` + `NO-ABS`.
+  - En la parte no respondible de una pregunta **parcial**, una **negación verdadera sobre la fuente** ("ATT&CK no publica
+    estadísticas…", "MITRE no recomienda productos") no responde a esa parte, sino que dice que no hay respuesta. Se califica como
+    `abstencion` `FUERA_REF`: es una abstención debida y no genera código (precedente p08 LLM #3; revisión del 2026-11-17, §5.4.3).
+  - En una pregunta **nula** (H = 0) se aplica D10: una negación verdadera sobre la fuente es `abstencion` `CORRECTA`, y una
+    negación falsa es `hecho` `INCORRECTA`. En una pregunta nula no puede haber `ABS-E`, porque la referencia no contiene nada que
+    negar. "Verdadera" y "falsa" se juzgan contra el corpus: si la negación se refiere a un objeto que existe fuera del corpus
+    (Mobile, ICS, D3FEND), el corpus no permite comprobarla y se califica como `hecho` `FUERA_REF` + `NO-ABS`, sea cierta o no
+    en el mundo (precedentes p10 LLM #4, n14 LLM; revisión del 2026-11-24, §5.4.4).
 - **Listas cerradas.** Los elementos extra que la referencia no incluye son `FUERA_REF` (se reportan aparte como extras), no
   `INCORRECTA`; solo se marca `INCORRECTA` lo que contradice la referencia. En modo RAG un extra además recibe `respaldo`.
 - **`llegó`** se determina leyendo los fragmentos recibidos (no solo `gold_points_found`), para registrar evidencia alternativa.
@@ -257,21 +267,22 @@ En la **parte respondible** (H > 0): `responde` (C = H, sin `ABS-E`) · `respond
 respondible**: `se abstiene` (abstención debida, `FUERA_REF` sin código) · `responde (NO-ABS)` · `no la aborda`. Las dos tasas
 de interés son la abstención errónea (`ABS-E`) y la respuesta sin base (`NO-ABS`).
 
-### 5.3 Resultado del piloto con la rúbrica congelada (26 respuestas, `v2/calificacion_v2.xlsx`, 2026-10-30)
+### 5.3 Resultado del piloto con la rúbrica congelada (26 respuestas, `v2/calificacion_v2.xlsx`, 2026-10-30; actualizado 2026-11-17, §5.4.3, y 2026-11-24, §5.4.4)
 
 | Lectura | RAG | LLM |
 |---|---|---|
-| A. Hechos de la referencia cubiertos (÷ 33 respondibles) | 14 (42 %) | 7 (21 %) |
-| A. Afirmaciones `INCORRECTA` ÷ afirmaciones de hecho | 19 % | 23 % |
-| B. Respuestas con abstención errónea (`ABS-E`) | 3 | 1 |
-| B. Respuestas con respuesta sin base (`NO-ABS`) | 0 | 7 |
+| A. Hechos de la referencia cubiertos (÷ 33 respondibles) | 14 (42 %) | 8 (24 %) |
+| A. Afirmaciones `INCORRECTA` ÷ afirmaciones de hecho | 4/21 (19 %) | 13/53 (25 %) |
+| B. Respuestas con abstención errónea (`ABS-E`) | 3 | 0 |
+| B. Respuestas con respuesta sin base (`NO-ABS`) | 0 | 6 |
 | C. Precisión de citas | 71 % | N/A |
 | C. Cobertura de citas (hechos cubiertos y citados ÷ hechos) | 39 % | N/A |
 | C. `SIN-RESPALDO` / `CITA-X` / `SIN-CITA` | 1 / 4 / 1 | N/A |
-| D. Afirmaciones `FUERA_REF` | 3 | 33 |
-| N2 promedio (descriptivo) | 1,38 | 0,38 |
+| D. Afirmaciones `FUERA_REF` | 3 | 31 |
+| N2 promedio (descriptivo) | 1,38 | 0,46 |
 | N3 promedio (descriptivo, excluye N/A) | 1,50 | N/A |
 | Alertas `CRITICA` / `RESPALDO` / `TRUNC` (respuestas) | 5 / 3 / 0 | 12 / 0 / 1 |
+| Respuestas `OK` | 7 (p03, p04, p07 y las cuatro nulas; mismo criterio que §5.4) | 1 (p03) |
 
 Por respuesta (C/H, N2, N3, diagnóstico):
 
@@ -279,19 +290,19 @@ Por respuesta (C/H, N2, N3, diagnóstico):
 |---|---|---|
 | p01 completa | 0/5, 0, N/A, E1 | 1/5, 1, N/A, E2 (TRUNC) |
 | p02 completa | 2/5, 1, 1, E1 E3 | 2/5, 1, N/A, E2 |
-| p03 completa | 2/2, 2, 2, OK | 1/2, 1, N/A, E2 |
+| p03 completa | 2/2, 2, 2, OK | 2/2, 2, N/A, OK |
 | p04 parcial | 2/2, 2, 2, OK | 1/2, 1, N/A, E0 E2 |
 | p05 completa | 2/4, 1, 1, E1 E2 E3 | 0/4, 0, N/A, E2 |
-| p06 parcial | 2/3, 1, 2, E2 | 0/3, 0, N/A, E0 E2 |
+| p06 parcial | 2/3, 1, 2, E2 | 0/3, 0, N/A, E2 |
 | p07 completa | 3/3, 2, 2, OK | 0/3, 0, N/A, E2 |
 | p08 parcial | 0/3, 0, 0, E1 E3 | 0/3, 0, N/A, E2 |
 | p09 parcial | 1/6, 1, 2, E1 E2 | 2/6, 1, N/A, E0 E2 |
-| p10–p13 nulas | 2, N/A, OK (×4) | 0, N/A, E0 (p10, p11) · E0 E2 (p12, p13) |
+| p10–p13 nulas | 2, N/A, OK (×4) | 0, N/A, E0 (p10, p11, p12) · E0 E2 (p13) |
 
-Lectura: frente a la referencia, el RAG cubre el doble de hechos que el LLM (14 frente a 7 de 33) y nunca responde sin base en las
-preguntas y partes no respondibles (0 frente a 7), a costa de abstenerse erróneamente en 3 respuestas donde la evidencia sí llegó.
-Donde la recuperación no trajo la evidencia (p01, p08) ambos modos fallan; donde llegó completa (p03, p04, p07) el RAG es
-correcto y completo. El LLM añade 33 afirmaciones fuera de la referencia (ciertas o no, no se verifican). Sin pruebas de
+Lectura: frente a la referencia, el RAG cubre casi el doble de hechos que el LLM (14 frente a 8 de 33) y nunca responde sin base
+en las preguntas y partes no respondibles (0 frente a 6), a costa de abstenerse erróneamente en 3 respuestas. Donde la
+recuperación no trajo la evidencia (p01, p08) ambos modos fallan; donde llegó completa (p03, p04, p07) el RAG es correcto y
+completo. El LLM solo acierta del todo en p03, una definición de táctica (Persistencia) que el modelo conoce de su entrenamiento. El LLM añade 31 afirmaciones fuera de la referencia (ciertas o no, no se verifican). Sin pruebas de
 significancia: muestra de 13 preguntas, un evaluador principal, una corrida.
 
 ### 5.4 Resultado de la corrida 2 con la rúbrica congelada (36 respuestas, `eval/run2/calificacion_v2_run2.xlsx`, 2026-11-08)
@@ -303,13 +314,13 @@ calificadas por el evaluador principal; `llegó` por evidencia leída en `Contex
 | Lectura | RAG | LLM |
 |---|---|---|
 | A. Hechos de la referencia cubiertos (÷ 42 respondibles) | 27 (64 %) | 7 (17 %) |
-| A. Afirmaciones `INCORRECTA` ÷ afirmaciones de hecho | 0 / 38 (0 %) | 22 / 82 (27 %) |
+| A. Afirmaciones `INCORRECTA` ÷ afirmaciones de hecho | 0 / 38 (0 %) | 22 / 81 (27 %) |
 | B. Respuestas con abstención errónea (`ABS-E`) | 4 | 0 |
 | B. Respuestas con respuesta sin base (`NO-ABS`) | 0 | 8 |
 | C. Precisión de citas (sostenidas ÷ afirmaciones de hecho) | 28 / 38 (74 %) | N/A |
 | C. Cobertura de citas (hechos cubiertos y citados ÷ hechos) | 23 / 42 (55 %) | N/A |
 | C. `SIN-RESPALDO` / `CITA-X` / `SIN-CITA` | 0 / 1 / 9 | N/A |
-| D. Afirmaciones `FUERA_REF` | 10 | 52 |
+| D. Afirmaciones `FUERA_REF` | 10 | 54 |
 | N2 promedio (descriptivo) | 1,61 | 0,17 |
 | N3 promedio (descriptivo, excluye N/A) | 1,27 (n = 11) | N/A |
 | Alertas `CRITICA` / `RESPALDO` / `TRUNC` (respuestas) | 4 / 1 / 0 | 18 / 0 / 1 |
@@ -352,17 +363,21 @@ con el hecho no entró en el top-5 y el modelo se abstuvo → `ABS-E` con `lleg�
 español dejó fuera los dos chunks de mitigaciones que sí llegaban con la pregunta en inglés en la réplica `084930`) y en las
 **citas** (9 `SIN-CITA`: listas y frases sin `[n]` aunque el fragmento las sostenga; 1 `CITA-X` en n06, donde cita una lista
 de ejemplos con APT41 y Empire como entradas separadas). El único E2 del RAG es n12 (H1 llegó y la respuesta se abstuvo). El LLM
-falla por **generación**: niega la existencia de objetos reales (T1486, TA0040, C0022, M1032, T0831), inventa IDs
+falla por **generación**: niega la existencia de objetos que están en el corpus (T1486, TA0040, C0022; las negaciones de n14
+sobre T0831 son `FUERA_REF` + `NO-ABS` y en n08 no niega M1032, corregido el 2026-11-24), inventa IDs
 (T1041.00x, T1591.00x, T1021.009 como PowerShell), confunde idiomas y plataformas (Empire en C#/Windows), y responde sin base en
-las seis nulas y en dos parciales. Las 52 afirmaciones `FUERA_REF` del LLM no se verifican.
+las seis nulas y en dos parciales. Las 54 afirmaciones `FUERA_REF` del LLM no se verifican.
 
 **Comparación con el piloto (§5.3), como dos corridas de la misma rúbrica sobre conjuntos distintos:** la cobertura del RAG sube
-de 42 % a 64 % y la del LLM baja de 21 % a 17 %; `INCORRECTA` del RAG pasa de 19 % a 0 % (el conjunto 2 tiene menos preguntas de
-"relación entre objetos" como p05) y la del LLM se mantiene (23 % → 27 %); `NO-ABS` del RAG sigue en 0 y la del LLM pasa de 7
-a 8 respuestas; la precisión de citas se mantiene (71 % → 74 %) y la cobertura de citas sube (39 % → 55 %), con el patrón
+de 42 % a 64 % y la del LLM baja de 24 % a 17 %; `INCORRECTA` del RAG pasa de 19 % a 0 % (el conjunto 2 tiene menos preguntas de
+"relación entre objetos" como p05, pero la calificación original de la corrida 2 tenía 16 % y el 0 % aparece con la revisión
+asistida, §5.4.1) y la del LLM se mantiene (25 % → 27 %); `NO-ABS` del RAG sigue en 0 y la del LLM pasa de 6 a 8 respuestas
+(14 de 20 entre las dos corridas; los dos modos usan instrucciones distintas, `app/rag/prompts.py`, así que la diferencia no
+mide solo la recuperación); la precisión de citas se mantiene (71 % → 74 %) y la cobertura de citas sube (39 % → 55 %), con el patrón
 invertido en los códigos (piloto: 4 `CITA-X`, 1 `SIN-CITA`; corrida 2: 1 y 9), que señala el mismo defecto de generación
-(listas sin `[n]`) y no un cambio del sistema. `ABS-E` del RAG se mantiene (3 → 4) y en ambas corridas la mayoría va con
-`llegó = NO` (E1). El caso n08 (inversión de p09: los productos sí estaban en el corpus) salió sin `ABS-E`: el RAG los nombró y
+(listas sin `[n]`) y no un cambio del sistema. `ABS-E` del RAG se mantiene (3 → 4). De las 7 respuestas con `ABS-E`, en 4 ningún
+hecho negado había llegado (p01, n02, n03, n07: E1); en p06 habían llegado los 3 hechos (E2) y en p09 y n12 la respuesta se
+abstuvo también sobre un hecho que sí llegó (E1 + E2). El caso n08 (inversión de p09: los productos sí estaban en el corpus) salió sin `ABS-E`: el RAG los nombró y
 citó. Los casos límite n15 (técnica retirada) y n18 (D3FEND) se calificaron con la regla de §3.2 (negación verdadera sobre la
 fuente = abstención correcta; negación falsa = hecho `INCORRECTA`) y se discuten con el director (§9).
 
@@ -388,7 +403,7 @@ Acuerdo original–final por columna: `tipo` 134/142 (94 %), `vs_ref` 116/142 (8
 | Lectura | RAG original | RAG final | LLM original | LLM final |
 |---|---|---|---|---|
 | A. Hechos cubiertos (÷ 42) | 24 (57 %) | 27 (64 %) | 0 (0 %)¹ | 7 (17 %) |
-| A. Afirmaciones `INCORRECTA` | 7/43 (16 %) | 0/38 (0 %) | 21/82 (26 %) | 22/82 (27 %) |
+| A. Afirmaciones `INCORRECTA` | 7/43 (16 %) | 0/38 (0 %) | 21/82 (26 %) | 22/82 (27 %)² |
 | B. Respuestas con `ABS-E` | 0 | 4 | 1 | 0 |
 | B. Respuestas con `NO-ABS` | 1 | 0 | 8 | 8 |
 | C. Precisión / cobertura de citas | 77 % / 57 % | 74 % / 55 % | — | — |
@@ -399,6 +414,8 @@ Acuerdo original–final por columna: `tipo` 134/142 (94 %), `vs_ref` 116/142 (8
 
 ¹ En la calificación original 7 afirmaciones `CORRECTA` del LLM no llevaban `hecho_ref`, y la fórmula de cobertura solo cuenta
 `CORRECTA` con `H#`; asignarlos fue parte de la revisión.
+² Valor al 2026-11-08. Tras la revisión de coherencia del 2026-11-17 (§5.4.3), tres afirmaciones LLM pasan de `hecho` a
+`abstencion` y el valor final queda en 22/79 (28 %).
 
 Las dos diferencias que el director señaló tienen una causa cada una: `INCORRECTA` del RAG baja de 16 % a 0 % porque 4 de las 7
 eran extras de lista que no contradicen la referencia (→ `FUERA_REF`) y 3 eran abstenciones ("los contextos no mencionan…")
@@ -422,11 +439,82 @@ Casos donde se aplicó en la corrida 2:
 | n15 | RAG | "Los contextos mencionan T1059.002, T1220, … pero no T1064" | `hecho` `FUERA_REF` (`SIN-CITA`) |
 | n15 | LLM | "T1064 describe Scripting…", "pertenece a Execution…" (×3) | `hecho` `FUERA_REF` + `NO-ABS` (responde sin base) |
 | n18 (D3FEND) | RAG | "Los contextos no informan de contramedidas de D3FEND asociadas a T1486" | `abstencion` `CORRECTA` |
-| n18 | LLM | "No hay contramedidas de D3FEND asociadas oficialmente a T1486" | `abstencion` `CORRECTA` (negación verdadera) |
-| n18 | LLM | "T1486 no tiene asociaciones directas…; D3FEND no proporciona lista oficial", "T1486 es una técnica de impacto cuyo objetivo es proteger…", "contramedidas posibles: cifrado…" | `hecho` `FUERA_REF` + `NO-ABS` |
+| n18 | LLM | "No hay contramedidas de D3FEND asociadas oficialmente a T1486", "T1486 no tiene asociaciones directas…; D3FEND no proporciona lista oficial" | `hecho` `FUERA_REF` + `NO-ABS` (no comprobable con el corpus; D3FEND sí publica relaciones inferidas para T1486). La primera era `abstencion` `CORRECTA` hasta el 2026-11-24 (§5.4.4) |
+| n18 | LLM | "T1486 es una técnica de impacto cuyo objetivo es proteger…", "contramedidas posibles: cifrado…" | `hecho` `FUERA_REF` + `NO-ABS` |
 
-Negaciones falsas en modo LLM (`hecho` `INCORRECTA`): "T1486 no existe / no es una técnica de ATT&CK" (n02, n12), "TA0040 no
-existe" (n10), "C0022 no está documentada" (n09), "M1032 no existe" (n08), "T0831 no existe" (n14).
+Negaciones en modo LLM que contradicen al corpus (`hecho` `INCORRECTA`): "T1486 no existe en ATT&CK" (n02), "no existe una
+entrada C0022" (n09), "la táctica TA0040 no existe" (n10), "no existe una capacidad de gusano asociada a T1486" (n12).
+Corrección del 2026-11-24: la lista anterior incluía "M1032 no existe" (n08) y "T0831 no existe" (n14). En n08 el modelo no
+niega M1032 (dice que no describe categorías de factores, y eso es lo `INCORRECTA`); en n14 las dos afirmaciones son `hecho`
+`FUERA_REF` + `NO-ABS`, porque T0831 es de ICS y el corpus no permite contrastarlas.
+
+#### 5.4.3 Revisión de coherencia de `zona = no_resp` (2026-11-17)
+
+**Origen.** Al preparar la defensa se comprobó que las afirmaciones sobre la parte no respondible no se habían calificado igual
+en las dos corridas. En el piloto, las abstenciones sobre la parte no respondible de preguntas parciales iban como `FUERA_REF`
+(p04, p06, p08 y p09 RAG; p08 LLM #2 y #3), como pide §3.2. En la corrida 2 iban como `CORRECTA` (n07 y n12 RAG), y las
+negaciones verdaderas sobre la fuente iban como `hecho` `CORRECTA` (n07, n08 y n10 LLM). En el piloto había además un `ABS-E` en
+una pregunta nula (p12 LLM #1), lo que §3.3 no permite porque una referencia vacía no contiene nada que negar.
+
+**Cambios.** Los propuso el asistente (Claude Opus 5.5) y el evaluador principal los aceptó todos. Están registrados en la hoja
+`Revisión 2026-11-17` de cada libro, con fila, antes, después y motivo:
+
+| Libro | Afirmación | Antes | Después |
+|---|---|---|---|
+| corrida 2 | n07 RAG #4, n12 RAG #2 (abstención en la parte no respondible) | `abstencion` `CORRECTA` | `abstencion` `FUERA_REF` |
+| corrida 2 | n07, n08 y n10 LLM #4 (negación verdadera sobre la fuente) | `hecho` `CORRECTA` | `abstencion` `FUERA_REF` |
+| piloto | p12 LLM #1 "No hay datos oficiales ni públicos…" (pregunta nula) | `abstencion` `INCORRECTA` (`ABS-E`) | `abstencion` `CORRECTA` (D10; el evaluador juzga la negación verdadera) |
+| piloto | p12 LLM #3 "ATT&CK no proporciona un ranking anual" (pregunta nula) | `hecho` `CORRECTA` | `abstencion` `CORRECTA` (D10) |
+
+**Efecto.** No cambian la cobertura, N2, N3, la lectura D ni nada del modo RAG. Cambian tres cifras del modo LLM:
+- Corrida 2: afirmaciones `INCORRECTA`, de 22/82 (27 %) a 22/79 (28 %).
+- Piloto: afirmaciones `INCORRECTA`, de 13/56 (23 %) a 13/55 (24 %).
+- Piloto: respuestas con `ABS-E`, de 1 a 0. El diagnóstico de p12 LLM pasa de `E0 E2` a `E0`.
+
+**Corrección de §5.3 en la misma revisión.** El libro del piloto congelado con v2.3 (commit `8ee4eff`) ya tenía corregido el
+`hecho_ref` de p03 LLM #2 y #3 (H1 → H2, aplicación de D2). Las tablas de §5.3 seguían con el valor anterior: p03 LLM aparecía
+como 1/2, N2 = 1, E2, cuando en el libro es 2/2, N2 = 2, OK. Las cifras del piloto LLM se actualizan al libro: cobertura de
+7/33 (21 %) a 8/33 (24 %), N2 promedio de 0,38 a 0,46 y respuestas `OK` de 0 a 1. Se comprobó, respuesta por respuesta, que el
+resto de §5.3 y §5.4 coincide con los libros.
+
+#### 5.4.4 Segunda revisión de coherencia (2026-11-24, observaciones 8 y 9 del director)
+
+**Origen.** El director señaló que, tras la revisión del 17 de noviembre, la misma regla seguía aplicada de forma distinta:
+en el piloto, p06 LLM #2 y p09 LLM #5 (negaciones verdaderas sobre la fuente en la parte no respondible) eran `hecho`
+`FUERA_REF` + `NO-ABS`, mientras que las frases equivalentes de la corrida 2 ya eran `abstencion` sin código; en la corrida 2
+quedaban abstenciones sobre la parte no respondible como `CORRECTA` con `zona = ref`; y en n18 LLM dos afirmaciones que niegan
+lo mismo tenían calificaciones opuestas. Se comprobó además en d3fend.mitre.org que D3FEND publica relaciones inferidas para
+T1486, de modo que la "negación verdadera" de n18 no lo era.
+
+**Cambios.** Los propuso el asistente (Claude Fable 5.2). Están en la hoja `Revisión 2026-11-24` de cada libro:
+
+| Libro | Afirmación | Antes | Después | Aceptación |
+|---|---|---|---|---|
+| piloto | p06 LLM #2, p09 LLM #5 | `hecho` `FUERA_REF` (`NO-ABS`) | `abstencion` `FUERA_REF` | SI (2026-11-24) |
+| corrida 2 | n08 RAG #1, n09 RAG #1, n10 RAG #6, n11 RAG #3 | `abstencion` `CORRECTA`, zona `ref` | `abstencion` `FUERA_REF`, zona `no_resp` | SI (2026-11-24) |
+| corrida 2 | n18 LLM #4 | `abstencion` `CORRECTA` | `hecho` `FUERA_REF` (`NO-ABS`) | SI (2026-11-24) |
+| corrida 2 | n11 LLM #2, n12 LLM #5 | `abstencion` `CORRECTA`, zona `ref` | `abstencion` `FUERA_REF`, zona `no_resp` | SI (2026-11-24) |
+| corrida 2 | n13 LLM #3 (pregunta nula, Mobile; precedente p10 LLM #4) | `abstencion` `CORRECTA`, zona `ref` | `hecho` `FUERA_REF` (`NO-ABS`) | SI (2026-11-24) |
+
+Las tres últimas filas son casos equivalentes que el asistente encontró al aplicar el mismo criterio; el evaluador principal
+las aceptó el mismo día, después de las demás.
+
+**Efecto.** No cambian la cobertura, N2, N3 ni nada del modo RAG en las tablas de lecturas. En modo LLM:
+- Piloto: `NO-ABS`, de 7 a 6 respuestas (p06 LLM pasa de `E0 E2` a `E2`); `INCORRECTA`, de 13/55 (24 %) a 13/53 (25 %);
+  `FUERA_REF`, de 33 a 31.
+- Corrida 2: `INCORRECTA`, de 22/79 (28 %) a 22/81 (27 %); `FUERA_REF`, de 52 a 54.
+- `NO-ABS` del LLM entre las dos corridas: de 15 a 14 de 20 respuestas.
+
+**Otras correcciones de la misma fecha, sin cambio en los libros.** Respuestas `OK` del RAG en el piloto: 7, no 3 (se cuentan
+las nulas, como en §5.4). Lista de negaciones `INCORRECTA` de §5.4.2 y de la lectura de §5.4. Causa de las `ABS-E` (§5.4).
+Acuerdo bruto (§7.3). Se deja constancia de que el `llegó` de la corrida 2 (42 valores) lo llenó el asistente en la hoja
+`Revisión` y de él dependen todos los E1 y E2 de esa corrida, y de que la columna `¿aceptas?` de esa hoja se llenó el
+2026-11-10 (en los commits del 2026-11-08 estaba vacía).
+
+**Queda sin tocar, para decisión del evaluador.** n17 LLM #1 ("No se han registrado ataques de ransomware por parte de ATT&CK
+en Ecuador durante 2025…") sigue como `hecho` `FUERA_REF` + `NO-ABS`, mientras que n17 LLM #2 ("ATT&CK no registra ataques por
+país ni por año") es `abstencion` `CORRECTA`. Si se leyera #1 como negación verdadera sobre la fuente, n17 LLM quedaría sin
+`NO-ABS` y cambiarían `NO-ABS` (8 → 7), N2 y las respuestas `OK` del LLM en la corrida 2.
 
 ### 5.5 Herramientas
 
@@ -521,18 +609,23 @@ acordadas con el director: p01, p05, p06 y p09 (8 respuestas, 27 afirmaciones), 
 `tipo`, `vs_ref`, `hecho_ref` y `respaldo`, **no la extracción**. Es un límite declarado: el acuerdo mide la aplicación de la
 rúbrica, no la descomposición en afirmaciones.
 
-**Acuerdo bruto** (calificación del evaluador principal tras aplicar D2, frente a la del segundo evaluador tal como la entregó):
+**Acuerdo bruto** (las dos calificaciones tal como se entregaron el 2026-10-23; libro del evaluador principal en el commit
+`9fd232e`). Corregido el 2026-11-24: la tabla anterior daba `vs_ref` 22/27 (κ 0,73) y `hecho_ref` 24/27 porque comparaba con
+el libro posterior, en el que el evaluador principal ya había cambiado p01 LLM #5 de `CORRECTA` (H3) a `FUERA_REF` por D2.
 
 | Columna | Coincidencias | Kappa de Cohen |
 |---|---|---|
-| `vs_ref` | 22 / 27 (81 %) | 0,73 |
+| `vs_ref` | 23 / 27 (85 %) | 0,78 |
 | `tipo` (hecho / abstención) | 26 / 27 (96 %) | 0,89 |
-| `hecho_ref` (igualdad exacta) | 24 / 27 (89 %) | — |
+| `hecho_ref` (igualdad exacta) | 25 / 27 (93 %) | — |
 | `respaldo` (5 pares comparables) | 4 / 5 | — |
 | N2 por respuesta | 7 / 8 | — |
 | Diagnóstico (lista de causas) | 7 / 8 | — |
 
-**Desacuerdos y su causa.** Los 5 desacuerdos de `vs_ref` corresponden a dos reglas que v2.2 no hacía explícitas:
+**Desacuerdos y su causa.** Tal como se entregaron, los desacuerdos de `vs_ref` son 4, todos sobre la parte no respondible
+(las dos primeras filas de la tabla). No vienen de una regla que faltara: v2.2 §3.3 decía que una abstención correcta sobre la
+parte no respondible es `CORRECTA` sin código; el segundo evaluador la aplicó y D2 la cambió después. La tercera fila (p01 LLM
+#5) no era un desacuerdo el 2026-10-23: aparece al aplicar D2 al libro del evaluador principal.
 
 | Caso | Evaluador principal | Evaluador 2 | Regla que lo resuelve |
 |---|---|---|---|
@@ -547,9 +640,10 @@ explica la única diferencia de N2 (1 frente a 0); p05 RAG #2, `SOSTENIDA` frent
 textualmente (§4.2).
 
 **Adjudicación (no es acuerdo entre evaluadores, D12).** Aplicando las reglas congeladas a ambas calificaciones, `vs_ref` queda en 26 / 27 (96 %), kappa 0,94. El caso restante es
-p09 RAG #2 (asignación de `hecho_ref`). **RQ6 se responde con el acuerdo bruto** (22/27, κ 0,73): es la única medida de acuerdo entre evaluadores. El 26/27 es una
-adjudicación hecha por el evaluador principal con las reglas que él mismo escribió; se reporta aparte, como evidencia de que los
-desacuerdos eran de regla y no de lectura, nunca como acuerdo. v2.3 incorpora esas reglas con sus ejemplos.
+p09 RAG #2 (asignación de `hecho_ref`). **RQ6 se responde con el acuerdo bruto** (23/27, κ 0,78): es la única medida de acuerdo entre evaluadores. El 26/27 es una
+adjudicación hecha por el evaluador principal con las reglas que él mismo escribió; se reporta aparte, nunca como acuerdo. Los
+desacuerdos de `tipo` (p06 LLM #1), `hecho_ref` (p09 RAG #2) y `respaldo` (p05 RAG #2) sí fueron lecturas distintas de reglas
+ya escritas. v2.3 incorpora esas reglas con sus ejemplos.
 
 **Límites.** 4 preguntas y 27 afirmaciones: el kappa es descriptivo, no una estimación poblacional. Un solo evaluador adicional.
 Afirmaciones pre-extraídas. La validación de la extracción de afirmaciones y de la tabla de hechos queda para la corrida nueva, si

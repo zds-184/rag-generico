@@ -45,21 +45,21 @@ medición y solo se reporta.
 | RQ2 | ¿La recuperación trajo la evidencia? | `llegó` por hecho leído en los contextos; gold en el top-5 en 6/9 (piloto) y 10/12 (corrida 2) preguntas respondibles; desempate determinista verificado en vivo (D6) | Sí, por hecho y aceptando evidencia alternativa; los fallos de recuperación se localizan (p01, p08; n02, n03, n07, n12) |
 | RQ3 | ¿Cada afirmación es correcta, completa y fiel? | 234 afirmaciones calificadas (92 piloto + 142 corrida 2) | Sí; la regla de enunciación (D2) es la que más decisiones resuelve |
 | RQ4 | ¿Cada afirmación está sostenida por su cita? | precisión de citas 71 % (piloto) y 74 % (corrida 2); cobertura de citas 39 % → 55 %; códigos CITA-X / SIN-CITA | Sí; el defecto dominante cambia de CITA-X (piloto) a SIN-CITA (corrida 2: listas sin [n]), mismo problema de generación |
-| RQ5 | ¿En qué se diferencian con y sin recuperación? | Lecturas A–D en ambas corridas (tabla §3) | El RAG cubre más hechos (42 % y 64 % frente a 21 % y 17 %), nunca responde sin base (NO-ABS 0 frente a 7 y 8) y su coste es la abstención errónea cuando la evidencia no llega (ABS-E 3 y 4, casi siempre con `llegó = NO`) |
+| RQ5 | ¿En qué se diferencian con y sin recuperación? | Lecturas A–D en ambas corridas (tabla §3) | El RAG cubre más hechos (42 % y 64 % frente a 24 % y 17 %), nunca responde sin base (NO-ABS 0 frente a 7 y 8) y su coste es la abstención errónea cuando la evidencia no llega (ABS-E 3 y 4, casi siempre con `llegó = NO`) |
 | RQ6 | ¿Es consistente entre evaluadores? | Segundo evaluador independiente en 4 preguntas / 27 afirmaciones: acuerdo bruto `vs_ref` 22/27 (κ 0,73), `tipo` 26/27 (κ 0,89). Aparte, como adjudicación y no como acuerdo: 26/27 tras aplicar las reglas congeladas a ambas calificaciones | Sí en lo esencial, con el acuerdo bruto como respuesta; 4 de los 5 desacuerdos de `vs_ref` eran una sola regla (parte no respondible), que D2 cerró. Límite: afirmaciones pre-extraídas, muestra pequeña, un evaluador adicional |
 
 ## 3. Resultados que propongo reportar (descriptivos, sin pruebas de significancia)
 
 | Lectura | Piloto RAG | Piloto LLM | Corrida 2 RAG | Corrida 2 LLM |
 |---|---|---|---|---|
-| A. Hechos cubiertos | 14/33 (42 %) | 7/33 (21 %) | 27/42 (64 %) | 7/42 (17 %) |
-| A. Afirmaciones INCORRECTA | 19 % | 23 % | 0 % (0/38) | 27 % (22/82) |
-| B. Respuestas con ABS-E | 3 | 1 | 4 | 0 |
+| A. Hechos cubiertos | 14/33 (42 %) | 8/33 (24 %) | 27/42 (64 %) | 7/42 (17 %) |
+| A. Afirmaciones INCORRECTA | 19 % | 24 % | 0 % (0/38) | 28 % (22/79) |
+| B. Respuestas con ABS-E | 3 | 0 | 4 | 0 |
 | B. Respuestas con NO-ABS | 0 | 7 | 0 | 8 |
 | C. Precisión / cobertura de citas | 71 % / 39 % | — | 74 % / 55 % | — |
 | C. SIN-R / CITA-X / SIN-C | 1 / 4 / 1 | — | 0 / 1 / 9 | — |
 | D. Afirmaciones FUERA_REF | 3 | 33 | 10 | 52 |
-| N2 promedio | 1,38 | 0,38 | 1,61 | 0,17 |
+| N2 promedio | 1,38 | 0,46 | 1,61 | 0,17 |
 | Diagnóstico dominante | E1 y E1+E3 | E2 | OK (9) y E3 (5) | E2 (10) y E0 (6) |
 
 Las dos corridas se presentan como **dos aplicaciones de la misma rúbrica sobre conjuntos distintos**, no como una mejora del

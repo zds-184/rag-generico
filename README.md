@@ -23,7 +23,7 @@ Este RAG es el *sistema bajo prueba* de un trabajo de titulación (Maestría en 
 | Corrida (`eval/pilot/results/`) | `20260922_064359` | `20261104_102233` |
 | Preguntas (completa / parcial / nula) | 13 (5/4/4) | 18 (6/6/6) |
 | Respuestas calificadas (RAG + LLM) / afirmaciones | 26 / 92 | 36 / 142 |
-| Hechos de referencia cubiertos, RAG vs LLM | 14/33 vs 7/33 | 27/42 vs 7/42 |
+| Hechos de referencia cubiertos, RAG vs LLM | 14/33 vs 8/33 | 27/42 vs 7/42 |
 | Respuestas sin base (`NO-ABS`), RAG vs LLM | 0 vs 7 | 0 vs 8 |
 | Abstenciones erróneas (`ABS-E`) del RAG | 3 | 4 |
 
